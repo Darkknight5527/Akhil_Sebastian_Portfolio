@@ -18,7 +18,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--g:#00e57a;--bg:#030805;--bg2:#07100a;--muted:rgba(255,255,255,0.45);--border:rgba(0,229,122,0.12)}
-html{scroll-behavior:auto}
+html{scroll-behavior:smooth}
 body{background:var(--bg);color:#fff;font-family:'Inter',sans-serif;overflow-x:hidden}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:#030805}
@@ -212,6 +212,11 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
   #skills .section-inner > div{grid-template-columns:1fr!important}
   #skills .section-inner > div > div:last-child{position:static!important}
   #experience .section-inner > div{grid-template-columns:1fr!important}
+}
+
+/* Scroll offset fix for fixed nav */
+#home,#about,#projects,#experience,#skills,#contact{
+  scroll-margin-top:75px;
 }
 </style>
 </head>
@@ -1452,17 +1457,9 @@ document.querySelectorAll('section[id]').forEach(sec=>{
   new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));const m=document.querySelector('.nav-links a[href="#'+e.target.id+'"]');if(m)m.classList.add('active');}});},{threshold:0.2}).observe(sec);
 });
 
-/* Override nav link clicks to account for fixed nav height */
+/* Nav link click — close mobile menu */
 document.querySelectorAll('.nav-links a').forEach(a=>{
-  a.addEventListener('click', function(e){
-    e.preventDefault();
-    const id = this.getAttribute('href').replace('#','');
-    const target = document.getElementById(id);
-    if(!target) return;
-    const navH = document.getElementById('nav').offsetHeight;
-    const top = target.getBoundingClientRect().top + window.scrollY - navH - 8;
-    window.scrollTo({top: Math.max(0, top), behavior:'smooth'});
-    /* close mobile menu if open */
+  a.addEventListener('click', function(){
     document.getElementById('hamburger')?.classList.remove('open');
     document.getElementById('nav-links')?.classList.remove('open');
     document.body.style.overflow='';
