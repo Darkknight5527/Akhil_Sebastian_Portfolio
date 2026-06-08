@@ -286,7 +286,7 @@ nav.filled{background:rgba(3,8,5,0.95);backdrop-filter:blur(14px);border-bottom:
           </a>
         </div>
         <!-- 3D DRONE MODEL VIEWER -->
-        <div style="position:relative;background:rgba(0,0,0,0.3);border-left:1px solid rgba(255,255,255,0.06);min-height:380px">
+        <div style="position:relative;background:#0d1f12;border-left:1px solid rgba(0,229,122,0.12);min-height:380px">
           <canvas id="drone-canvas" style="width:100%;height:100%;display:block"></canvas>
           <div id="drone-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
             <div style="width:36px;height:36px;border:2px solid rgba(0,229,122,0.2);border-top-color:var(--g);border-radius:50%;animation:spin 0.8s linear infinite"></div>
@@ -584,10 +584,10 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
 
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0x000000, 0);
+  renderer.setClearColor(0x0d1f12, 1);
   renderer.physicallyCorrectLights = true;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.2;
+  renderer.toneMappingExposure = 1.4;
 
   function resize(){
     const W = canvas.clientWidth, H = canvas.clientHeight;
@@ -597,46 +597,56 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   }
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100);
-  camera.position.set(0, 0.8, 3.5);
+  scene.background = new THREE.Color(0x0d1f12);
 
-  /* lighting — warm key + cool fill + green rim */
-  const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-  scene.add(ambient);
-  const key = new THREE.DirectionalLight(0xffffff, 2.5);
-  key.position.set(3, 4, 3);
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 100);
+  camera.position.set(0, 0.3, 3.8);
+  camera.lookAt(0, 0, 0);
+
+  /* lighting */
+  scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+  const key = new THREE.DirectionalLight(0xffffff, 3.0);
+  key.position.set(4, 5, 4);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0x8ecfff, 1.0);
-  fill.position.set(-3, 1, -2);
+  const fill = new THREE.DirectionalLight(0xaaddff, 1.2);
+  fill.position.set(-4, 2, -3);
   scene.add(fill);
-  const rim = new THREE.PointLight(0x00e57a, 1.5, 8);
-  rim.position.set(0, -1, 2);
+  const bottom = new THREE.DirectionalLight(0xffffff, 0.6);
+  bottom.position.set(0, -4, 0);
+  scene.add(bottom);
+  const rim = new THREE.PointLight(0x00e57a, 2.0, 10);
+  rim.position.set(0, -1, 2.5);
   scene.add(rim);
 
-  /* mouse drag orbit */
-  let isDragging=false, prevX=0, prevY=0, rotX=0, rotY=0, autoRot=true;
-  canvas.addEventListener('mousedown', e=>{isDragging=true; prevX=e.clientX; prevY=e.clientY; autoRot=false;});
-  window.addEventListener('mouseup', ()=>{isDragging=false;});
-  window.addEventListener('mousemove', e=>{
-    if(!isDragging) return;
-    rotY += (e.clientX - prevX) * 0.008;
-    rotX += (e.clientY - prevY) * 0.006;
-    rotX = Math.max(-0.8, Math.min(0.8, rotX));
-    prevX=e.clientX; prevY=e.clientY;
-  });
-  canvas.addEventListener('touchstart', e=>{isDragging=true; prevX=e.touches[0].clientX; prevY=e.touches[0].clientY; autoRot=false;},{passive:true});
-  window.addEventListener('touchend', ()=>isDragging=false);
-  window.addEventListener('touchmove', e=>{
-    if(!isDragging) return;
-    rotY += (e.touches[0].clientX - prevX)*0.008;
-    rotX += (e.touches[0].clientY - prevY)*0.006;
-    prevX=e.touches[0].clientX; prevY=e.touches[0].clientY;
-  },{passive:true});
+  /* state */
+  let isDragging = false;
+  let prevX = 0, prevY = 0;
+  let rotX = 0, rotY = 0;
+  let velX = 0, velY = 0;
+  let autoRot = true;
+  let lastInteract = 0;
+  const REALIGN_DELAY = 3000;
 
-  let model = null;
-  let t = 0;
+  function startDrag(x, y){ isDragging=true; prevX=x; prevY=y; autoRot=false; lastInteract=Date.now(); velX=0; velY=0; }
+  function endDrag(){ isDragging=false; lastInteract=Date.now(); }
+  function moveDrag(x, y){
+    if(!isDragging) return;
+    const dx = x - prevX, dy = y - prevY;
+    velY = dx * 0.008; velX = dy * 0.006;
+    rotY += velY; rotX += velX;
+    rotX = Math.max(-1.0, Math.min(1.0, rotX));
+    prevX=x; prevY=y;
+  }
 
-  /* Load GLB with Draco decoder */
+  canvas.addEventListener('mousedown', e=>startDrag(e.clientX, e.clientY));
+  window.addEventListener('mouseup', endDrag);
+  window.addEventListener('mousemove', e=>moveDrag(e.clientX, e.clientY));
+  canvas.addEventListener('touchstart', e=>startDrag(e.touches[0].clientX, e.touches[0].clientY), {passive:true});
+  window.addEventListener('touchend', endDrag);
+  window.addEventListener('touchmove', e=>moveDrag(e.touches[0].clientX, e.touches[0].clientY), {passive:true});
+
+  let model = null, t = 0;
+
   const dracoLoader = new THREE.DRACOLoader();
   dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
   const loader = new THREE.GLTFLoader();
@@ -645,28 +655,29 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   loader.load('drone.glb',
     (gltf) => {
       model = gltf.scene;
-      /* centre and scale model */
       const box = new THREE.Box3().setFromObject(model);
       const centre = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
+      const size   = box.getSize(new THREE.Vector3());
       const maxDim = Math.max(size.x, size.y, size.z);
-      model.position.sub(centre);
+      /* centre geometry exactly */
+      model.position.set(-centre.x * (2.2/maxDim), -centre.y * (2.2/maxDim), -centre.z * (2.2/maxDim));
       model.scale.setScalar(2.2 / maxDim);
-      scene.add(model);
-      /* hide loader */
+      const pivot = new THREE.Group();
+      pivot.add(model);
+      scene.add(pivot);
+      model = pivot;
       const loading = document.getElementById('drone-loading');
       if(loading) loading.style.display = 'none';
     },
     (xhr) => {
-      const pct = Math.round(xhr.loaded / xhr.total * 100);
-      const loading = document.getElementById('drone-loading');
-      if(loading){
-        const span = loading.querySelector('span');
-        if(span) span.textContent = 'Loading model... ' + pct + '%';
+      if(xhr.total){
+        const pct = Math.round(xhr.loaded/xhr.total*100);
+        const el = document.querySelector('#drone-loading span');
+        if(el) el.textContent = 'Loading model... ' + pct + '%';
       }
     },
     (err) => {
-      console.warn('GLB load error:', err);
+      console.warn('GLB error:', err);
       const loading = document.getElementById('drone-loading');
       if(loading) loading.style.display = 'none';
     }
@@ -678,13 +689,43 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   (function loop(){
     requestAnimationFrame(loop);
     t += 0.012;
+
     if(model){
-      if(autoRot) rotY += 0.006;
-      model.rotation.y = rotY;
-      model.rotation.x = rotX;
-      model.position.y = Math.sin(t * 0.6) * 0.04;
-      rim.position.x = Math.sin(t) * 2;
+      const now = Date.now();
+      const timeSince = now - lastInteract;
+
+      if(isDragging){
+        /* while dragging — direct control */
+        model.rotation.y = rotY;
+        model.rotation.x = rotX;
+      } else if(!autoRot && timeSince > REALIGN_DELAY){
+        /* realign phase — smoothly return to default and resume auto */
+        rotX += (0 - rotX) * 0.04;
+        rotY += (0 - rotY) * 0.04;
+        if(Math.abs(rotX) < 0.01 && Math.abs(rotY) < 0.01){
+          rotX = 0; rotY = 0; autoRot = true;
+        }
+        model.rotation.x = rotX;
+        model.rotation.y = rotY;
+      } else if(autoRot){
+        /* auto rotate */
+        rotY += 0.005;
+        model.rotation.y = rotY;
+        model.rotation.x = rotX;
+      } else {
+        /* momentum coast after release */
+        velX *= 0.92; velY *= 0.92;
+        rotX += velX; rotY += velY;
+        rotX = Math.max(-1.0, Math.min(1.0, rotX));
+        model.rotation.x = rotX;
+        model.rotation.y = rotY;
+      }
+
+      /* gentle hover bob */
+      model.position.y = Math.sin(t * 0.6) * 0.06;
+      rim.position.x = Math.sin(t * 0.5) * 2;
     }
+
     renderer.render(scene, camera);
   })();
 })();
