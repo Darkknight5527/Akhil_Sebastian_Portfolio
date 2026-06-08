@@ -218,6 +218,30 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
 #home,#about,#projects,#experience,#skills,#contact{
   scroll-margin-top:75px;
 }
+
+/* Mobile fix — featured project card */
+@media(max-width:768px){
+  #projects .section-inner > div:nth-child(2) > div {
+    grid-template-columns: 1fr !important;
+  }
+  #projects .section-inner > div:nth-child(2) > div > div:last-child {
+    border-left: none !important;
+    border-top: 1px solid rgba(255,255,255,0.06) !important;
+    min-height: 280px !important;
+  }
+  #projects .section-inner > div:nth-child(3) {
+    grid-template-columns: 1fr !important;
+  }
+  /* Skills sticky panel — unstick on mobile */
+  #skills .section-inner > div > div:last-child {
+    position: static !important;
+    top: auto !important;
+  }
+  /* Experience grid */
+  #experience .section-inner > div {
+    grid-template-columns: 1fr !important;
+  }
+}
 </style>
 </head>
 <body>
