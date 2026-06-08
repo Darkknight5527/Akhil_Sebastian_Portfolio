@@ -7,44 +7,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--g:#00e57a;--g2:rgba(0,229,122,0.15);--bg:#030805;--bg2:#07100a;--muted:rgba(255,255,255,0.45);--border:rgba(0,229,122,0.12)}
-html{scroll-behavior:auto}
+:root{--g:#00e57a;--bg:#030805;--bg2:#07100a;--muted:rgba(255,255,255,0.45);--border:rgba(0,229,122,0.12)}
+html{scroll-behavior:smooth}
 body{background:var(--bg);color:#fff;font-family:'Inter',sans-serif;overflow-x:hidden}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:#030805}
 ::-webkit-scrollbar-thumb{background:var(--g);border-radius:2px}
 
-/* PROGRESS */
-#prog{position:fixed;top:0;left:0;height:2px;background:var(--g);width:0%;z-index:500;pointer-events:none}
+#prog{position:fixed;top:0;left:0;height:2px;background:var(--g);width:0%;z-index:500;pointer-events:none;transition:width 0.1s}
 
-/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:400;display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 40px 14px;transition:background 0.4s,padding 0.3s}
-nav.filled{background:rgba(3,8,5,0.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 40px}
+nav.filled{background:rgba(3,8,5,0.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 40px}
 .nav-logo{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--g);letter-spacing:0.2em;text-transform:uppercase}
 .nav-links{display:flex;gap:32px;list-style:none}
 .nav-links a{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.12em;text-transform:uppercase;padding-bottom:3px;border-bottom:1px solid transparent;transition:color 0.2s,border-color 0.2s}
 .nav-links a:hover,.nav-links a.active{color:var(--g);border-bottom-color:var(--g)}
 
-/* ── FULL‑PAGE 3D CANVAS ── */
-#three-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
-
-/* ── SCROLL CONTAINER ── */
-#scroll-root{position:relative;z-index:10}
-
-/* ── SECTIONS ── */
-.panel{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:120px 60px 80px}
-.panel-inner{max-width:960px;width:100%;margin:0 auto}
-
-/* hero */
-#home{min-height:100vh}
-.hero-content{text-align:center;display:flex;flex-direction:column;align-items:center}
-.eyebrow{font-family:'Space Mono',monospace;font-size:11px;color:var(--g);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px;opacity:0;transition:opacity 0.8s,transform 0.8s;transform:translateY(14px)}
+/* HERO */
+#home{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 40px 80px;overflow:hidden}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(3,8,5,0.55) 0%,rgba(3,8,5,0.2) 45%,rgba(3,8,5,0.92) 100%)}
+.hero-content{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center}
+.eyebrow{font-family:'Space Mono',monospace;font-size:11px;color:var(--g);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px;opacity:0;transform:translateY(14px);transition:opacity 0.8s,transform 0.8s}
 .eyebrow::before,.eyebrow::after{content:'';display:block;width:36px;height:1px;background:var(--g)}
-.hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(68px,12vw,130px);line-height:0.88;letter-spacing:0.05em;color:#fff;text-transform:uppercase;margin-bottom:22px;opacity:0;transition:opacity 0.9s 0.2s,transform 0.9s 0.2s;transform:translateY(20px)}
-.hero-name .gc{color:var(--g)}
-.hero-sub{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:0.1em;margin-bottom:40px;opacity:0;transition:opacity 0.9s 0.4s,transform 0.9s 0.4s;transform:translateY(14px)}
+.hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(68px,12vw,130px);line-height:0.88;letter-spacing:0.05em;color:#fff;text-transform:uppercase;margin-bottom:22px;opacity:0;transform:translateY(20px);transition:opacity 0.9s 0.2s,transform 0.9s 0.2s}
+.gc{color:var(--g)}
+.hero-sub{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:0.1em;margin-bottom:40px;opacity:0;transform:translateY(14px);transition:opacity 0.9s 0.4s,transform 0.9s 0.4s}
 .hero-sub b{color:rgba(255,255,255,0.8);font-weight:400}
-.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;opacity:0;transition:opacity 0.9s 0.6s,transform 0.9s 0.6s;transform:translateY(14px)}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;opacity:0;transform:translateY(14px);transition:opacity 0.9s 0.6s,transform 0.9s 0.6s}
 .btn{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:12px 24px;border-radius:3px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;transition:all 0.2s;cursor:pointer}
 .btn-p{background:var(--g);color:#030805;font-weight:700;border-color:var(--g)}
 .btn-p:hover{background:#00ff8c;transform:translateY(-2px)}
@@ -54,54 +44,68 @@ nav.filled{background:rgba(3,8,5,0.93);backdrop-filter:blur(14px);border-bottom:
 .scroll-line{width:1px;height:40px;background:var(--g);opacity:0.4;animation:sl 2s ease-in-out infinite}
 @keyframes sl{0%,100%{transform:scaleY(1);opacity:0.3}50%{transform:scaleY(1.2);opacity:0.8}}
 
-/* stats */
-.stats-bar{display:flex;justify-content:center;background:rgba(7,16,10,0.9);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;z-index:20}
+/* STATS */
+.stats-bar{display:flex;justify-content:center;background:rgba(7,16,10,0.97);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;z-index:10}
 .stat{flex:1;max-width:180px;text-align:center;padding:26px 16px;border-right:1px solid var(--border);transition:background 0.2s}
 .stat:last-child{border-right:none}
 .stat:hover{background:rgba(0,229,122,0.04)}
 .stat-n{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--g);letter-spacing:0.06em;display:block;line-height:1;margin-bottom:5px}
 .stat-l{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase}
 
-/* marquee */
-.mq{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(7,16,10,0.9);padding:13px 0;position:relative;z-index:20}
-.mq-t{display:flex;white-space:nowrap;animation:mq 24s linear infinite}
+/* MARQUEE */
+.mq{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(7,16,10,0.97);padding:13px 0;position:relative;z-index:10}
+.mq-t{display:flex;white-space:nowrap;animation:mqroll 24s linear infinite}
 .mq-t.rev{animation-direction:reverse}
 .mq-t span{font-family:'Space Mono',monospace;font-size:11px;color:rgba(0,229,122,0.4);letter-spacing:0.14em;text-transform:uppercase;padding:0 28px}
 .mq-t span.s{color:rgba(0,229,122,0.18)}
-@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes mqroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-/* section label */
-.sec-hd{display:flex;align-items:center;gap:14px;margin-bottom:50px}
+/* SECTIONS */
+.section{position:relative;z-index:10;background:rgba(7,16,10,0.97);border-bottom:1px solid var(--border)}
+.section.alt{background:rgba(3,8,5,0.98)}
+.section-inner{max-width:1000px;margin:0 auto;padding:90px 40px 80px}
+
+/* PCB TRACE CONNECTOR between sections */
+.trace-connector{height:80px;background:rgba(3,8,5,0.98);position:relative;z-index:10;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.trace-connector svg{width:100%;height:100%}
+
+/* SECTION LAYOUT with 3D model inset */
+.sec-split{display:grid;grid-template-columns:1fr 360px;gap:50px;align-items:center}
+.sec-split.flip{grid-template-columns:360px 1fr}
+
+/* 3D canvas inset */
+.model-wrap{position:relative;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:rgba(0,229,122,0.02);height:340px}
+.model-wrap canvas{width:100%!important;height:100%!important;display:block}
+.model-label{position:absolute;bottom:10px;left:12px;font-family:'Space Mono',monospace;font-size:9px;color:var(--g);letter-spacing:0.12em;text-transform:uppercase;opacity:0.7}
+
+/* SECTION HEADER */
+.sec-hd{display:flex;align-items:center;gap:14px;margin-bottom:44px}
 .sec-n{font-family:'Space Mono',monospace;font-size:11px;color:rgba(0,229,122,0.5);letter-spacing:0.18em}
 .sec-l{flex:1;height:1px;background:var(--border)}
-.sec-t{font-family:'Bebas Neue',sans-serif;font-size:36px;color:#fff;letter-spacing:0.08em}
+.sec-t{font-family:'Bebas Neue',sans-serif;font-size:34px;color:#fff;letter-spacing:0.08em}
 
-/* section backgrounds */
-.panel.dark-sec{background:rgba(7,16,10,0.85)}
-.panel.darker-sec{background:rgba(3,8,5,0.9)}
-
-/* about grid */
-.about-grid{display:grid;grid-template-columns:260px 1fr;gap:56px;align-items:start}
-.pframe{position:relative;margin-bottom:18px}
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:240px 1fr;gap:44px;align-items:start}
+.pframe{position:relative;margin-bottom:16px}
 .pframe::before{content:'';position:absolute;inset:-6px;border:1px solid rgba(0,229,122,0.22);border-radius:6px;pointer-events:none}
 .corner{position:absolute;width:18px;height:18px}
 .c-tl{top:-6px;left:-6px;border-top:2px solid var(--g);border-left:2px solid var(--g);border-radius:2px 0 0 0}
 .c-tr{top:-6px;right:-6px;border-top:2px solid var(--g);border-right:2px solid var(--g);border-radius:0 2px 0 0}
 .c-bl{bottom:-6px;left:-6px;border-bottom:2px solid var(--g);border-left:2px solid var(--g);border-radius:0 0 0 2px}
 .c-br{bottom:-6px;right:-6px;border-bottom:2px solid var(--g);border-right:2px solid var(--g);border-radius:0 0 2px 0}
-.acard{background:rgba(0,229,122,0.04);border:1px solid var(--border);border-radius:4px;padding:14px 16px;margin-bottom:12px}
+.acard{background:rgba(0,229,122,0.03);border:1px solid var(--border);border-radius:4px;padding:14px 16px;margin-bottom:12px}
 .acard-lbl{font-family:'Space Mono',monospace;font-size:9px;color:rgba(0,229,122,0.6);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:10px}
 .edu-row{padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid rgba(0,229,122,0.07)}
 .edu-row:last-child{padding-bottom:0;margin-bottom:0;border-bottom:none}
 .sdot{width:8px;height:8px;background:var(--g);border-radius:50%;display:inline-block;flex-shrink:0;animation:db 2.5s ease-in-out infinite}
-@keyframes db{0%,100%{box-shadow:0 0 4px rgba(0,229,122,0.5)}50%{box-shadow:0 0 10px rgba(0,229,122,1)}}
+@keyframes db{0%,100%{box-shadow:0 0 4px rgba(0,229,122,0.5)}50%{box-shadow:0 0 12px rgba(0,229,122,1)}}
 .cur-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:10px}
 .cdot{width:6px;height:6px;background:var(--g);border-radius:50%;margin-top:7px;flex-shrink:0}
 .fun-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .fc{background:rgba(0,229,122,0.03);border:1px solid rgba(0,229,122,0.1);border-radius:4px;padding:11px 13px;display:flex;align-items:center;gap:9px;transition:border-color 0.2s}
 .fc:hover{border-color:rgba(0,229,122,0.3)}
 
-/* reveal */
+/* REVEAL */
 .rv{opacity:0;transform:translateY(28px);transition:opacity 0.7s,transform 0.7s}
 .rv.on{opacity:1;transform:translateY(0)}
 .rl{opacity:0;transform:translateX(-36px);transition:opacity 0.7s,transform 0.7s}
@@ -110,32 +114,20 @@ nav.filled{background:rgba(3,8,5,0.93);backdrop-filter:blur(14px);border-bottom:
 .rr.on{opacity:1;transform:translateX(0)}
 .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
 
-/* 3D model label badge */
-.model-badge{position:fixed;bottom:32px;right:32px;z-index:300;font-family:'Space Mono',monospace;font-size:10px;color:var(--g);letter-spacing:0.12em;text-transform:uppercase;background:rgba(3,8,5,0.8);border:1px solid var(--border);border-radius:3px;padding:8px 14px;pointer-events:none;opacity:0;transition:opacity 0.5s}
-.model-badge.show{opacity:1}
-
-/* section 3D inset */
-.three-inset{width:100%;height:320px;position:relative;margin-bottom:40px;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:rgba(0,229,122,0.02)}
-.three-inset canvas{width:100%!important;height:100%!important}
-
-@media(max-width:700px){
+@media(max-width:800px){
+  .sec-split,.sec-split.flip{grid-template-columns:1fr}
+  .model-wrap{height:240px}
   .about-grid{grid-template-columns:1fr}
   .fun-grid{grid-template-columns:1fr}
-  .hero-name{font-size:clamp(56px,16vw,100px)}
   nav{padding:12px 20px}
   .nav-links{gap:16px}
-  .panel{padding:100px 24px 60px}
+  .section-inner{padding:70px 24px 60px}
 }
 </style>
 </head>
 <body>
 
 <div id="prog"></div>
-
-<!-- Fixed 3D canvas — full viewport -->
-<canvas id="three-canvas"></canvas>
-
-<div class="model-badge" id="mbadge">● PCB — FLYTHROUGH</div>
 
 <nav id="nav">
   <div class="nav-logo">AS — Portfolio</div>
@@ -149,40 +141,38 @@ nav.filled{background:rgba(3,8,5,0.93);backdrop-filter:blur(14px);border-bottom:
   </ul>
 </nav>
 
-<div id="scroll-root">
-
 <!-- ═══ HERO ═══ -->
-<section class="panel" id="home">
-  <div class="panel-inner">
-    <div class="hero-content">
-      <div class="eyebrow" id="ey">EEE Engineer</div>
-      <h1 class="hero-name" id="hn">AKHIL<br><span class="gc">SEBASTIAN</span></h1>
-      <p class="hero-sub" id="hs"><b>Robotics</b> &nbsp;·&nbsp; <b>Embedded Systems</b> &nbsp;·&nbsp; <b>ATE</b></p>
-      <div class="hero-btns" id="hb">
-        <a href="#projects" class="btn btn-p">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          View Projects
-        </a>
-        <a href="resume.pdf" download class="btn btn-o">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Resume
-        </a>
-        <a href="https://github.com/akhilsebastian5527" target="_blank" class="btn btn-o">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
-          GitHub
-        </a>
-        <a href="#contact" class="btn btn-o">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Contact
-        </a>
-      </div>
-      <div class="scroll-cue" id="sc"><div class="scroll-line"></div>Scroll</div>
+<section id="home" style="position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 40px 80px;overflow:hidden">
+  <canvas id="hero-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="eyebrow" id="ey">EEE Engineer</div>
+    <h1 class="hero-name" id="hn">AKHIL<br><span class="gc">SEBASTIAN</span></h1>
+    <p class="hero-sub" id="hs"><b>Robotics</b> &nbsp;·&nbsp; <b>Embedded Systems</b> &nbsp;·&nbsp; <b>ATE</b></p>
+    <div class="hero-btns" id="hb">
+      <a href="#projects" class="btn btn-p">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        View Projects
+      </a>
+      <a href="resume.pdf" download class="btn btn-o">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Resume
+      </a>
+      <a href="https://github.com/akhilsebastian5527" target="_blank" class="btn btn-o">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        GitHub
+      </a>
+      <a href="#contact" class="btn btn-o">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Contact
+      </a>
     </div>
+    <div class="scroll-cue" id="sc"><div class="scroll-line"></div>Scroll</div>
   </div>
 </section>
 
 <!-- STATS -->
-<div class="stats-bar" style="position:relative;z-index:20">
+<div class="stats-bar">
   <div class="stat rv d1"><span class="stat-n">8.16</span><span class="stat-l">CGPA / 10</span></div>
   <div class="stat rv d2"><span class="stat-n">5+</span><span class="stat-l">Projects Built</span></div>
   <div class="stat rv d3"><span class="stat-n">2ND</span><span class="stat-l">IAM3D National</span></div>
@@ -191,16 +181,19 @@ nav.filled{background:rgba(3,8,5,0.93);backdrop-filter:blur(14px);border-bottom:
 </div>
 
 <!-- MARQUEE 1 -->
-<div class="mq" style="position:relative;z-index:20">
+<div class="mq">
   <div class="mq-t">
-    <span>ROS2</span><span class="s">/</span><span>Gazebo</span><span class="s">/</span><span>Embedded Systems</span><span class="s">/</span><span>PCB Design</span><span class="s">/</span><span>Drone Design</span><span class="s">/</span><span>Autonomous Robotics</span><span class="s">/</span><span>OpenCV</span><span class="s">/</span><span>ATE</span><span class="s">/</span><span>Solidworks</span><span class="s">/</span><span>Betaflight</span><span class="s">/</span><span>Sensor Fusion</span><span class="s">/</span><span>Raspberry Pi</span><span class="s">/</span><span>Path Planning</span><span class="s">/</span><span>MATLAB</span><span class="s">/</span>
-    <span>ROS2</span><span class="s">/</span><span>Gazebo</span><span class="s">/</span><span>Embedded Systems</span><span class="s">/</span><span>PCB Design</span><span class="s">/</span><span>Drone Design</span><span class="s">/</span><span>Autonomous Robotics</span><span class="s">/</span><span>OpenCV</span><span class="s">/</span><span>ATE</span><span class="s">/</span><span>Solidworks</span><span class="s">/</span><span>Betaflight</span><span class="s">/</span><span>Sensor Fusion</span><span class="s">/</span><span>Raspberry Pi</span><span class="s">/</span><span>Path Planning</span><span class="s">/</span><span>MATLAB</span><span class="s">/</span>
+    <span>ROS2</span><span class="s">/</span><span>Gazebo</span><span class="s">/</span><span>Embedded Systems</span><span class="s">/</span><span>PCB Design</span><span class="s">/</span><span>Drone Design</span><span class="s">/</span><span>Autonomous Robotics</span><span class="s">/</span><span>OpenCV</span><span class="s">/</span><span>ATE</span><span class="s">/</span><span>Solidworks</span><span class="s">/</span><span>Betaflight</span><span class="s">/</span><span>Sensor Fusion</span><span class="s">/</span><span>Raspberry Pi</span><span class="s">/</span>
+    <span>ROS2</span><span class="s">/</span><span>Gazebo</span><span class="s">/</span><span>Embedded Systems</span><span class="s">/</span><span>PCB Design</span><span class="s">/</span><span>Drone Design</span><span class="s">/</span><span>Autonomous Robotics</span><span class="s">/</span><span>OpenCV</span><span class="s">/</span><span>ATE</span><span class="s">/</span><span>Solidworks</span><span class="s">/</span><span>Betaflight</span><span class="s">/</span><span>Sensor Fusion</span><span class="s">/</span><span>Raspberry Pi</span><span class="s">/</span>
   </div>
 </div>
 
+<!-- TRACE CONNECTOR -->
+<div class="trace-connector"><svg viewBox="0 0 1200 80" preserveAspectRatio="none"><polyline points="600,0 600,20 500,20 500,40 700,40 700,60 600,60 600,80" fill="none" stroke="#00e57a" stroke-width="1.5" stroke-opacity="0.4"/><circle cx="600" cy="0" r="3" fill="#00e57a" opacity="0.6"/><circle cx="600" cy="80" r="3" fill="#00e57a" opacity="0.6"/><rect x="492" y="32" width="16" height="16" fill="none" stroke="#00e57a" stroke-width="1" opacity="0.4"/><rect x="692" y="32" width="16" height="16" fill="none" stroke="#00e57a" stroke-width="1" opacity="0.4"/></svg></div>
+
 <!-- ═══ ABOUT ═══ -->
-<section class="panel dark-sec" id="about">
-  <div class="panel-inner">
+<section class="section" id="about">
+  <div class="section-inner">
     <div class="sec-hd rv"><span class="sec-n">01</span><span class="sec-l"></span><span class="sec-t">ABOUT ME</span><span class="sec-l"></span><span class="sec-n">01</span></div>
     <div class="about-grid">
       <div>
@@ -232,10 +225,8 @@ nav.filled{background:rgba(3,8,5,0.93);backdrop-filter:blur(14px);border-bottom:
           </div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:30px;padding-top:4px">
-        <p class="rr" style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.95">
-          I'm an Electrical and Electronics Engineering graduate who fell in love with machines that <span style="color:#fff;font-weight:500">think, move, and adapt</span>. From designing custom PCBs to building autonomous robots that navigate real terrain, I chase the intersection of hardware and intelligence. Currently working as a <span style="color:var(--g);font-weight:500">Testing &amp; Validation Engineer intern</span> at Anora Instrumentation, working on ATE, embedded debugging, and protocol analysis on real industrial hardware.
-        </p>
+      <div style="display:flex;flex-direction:column;gap:28px;padding-top:4px">
+        <p class="rr" style="font-size:15px;color:rgba(255,255,255,0.55);line-height:1.95">I'm an Electrical and Electronics Engineering graduate who fell in love with machines that <span style="color:#fff;font-weight:500">think, move, and adapt</span>. From designing custom PCBs to building autonomous robots that navigate real terrain, I chase the intersection of hardware and intelligence. Currently working as a <span style="color:var(--g);font-weight:500">Testing &amp; Validation Engineer intern</span> at Anora Instrumentation, working on ATE, embedded debugging, and protocol analysis on real industrial hardware.</p>
         <div class="rr d1">
           <div style="font-family:'Space Mono',monospace;font-size:9px;color:rgba(0,229,122,0.6);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px">// Currently</div>
           <div class="cur-item"><span class="cdot"></span><span style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6">Interning as <span style="color:#fff">Testing &amp; Validation Engineer</span> at Anora Instrumentation — ATE, embedded debugging, circuit-level testing and protocol analysis</span></div>
@@ -255,502 +246,236 @@ nav.filled{background:rgba(3,8,5,0.93);backdrop-filter:blur(14px);border-bottom:
   </div>
 </section>
 
+<!-- TRACE CONNECTOR 2 -->
+<div class="trace-connector"><svg viewBox="0 0 1200 80" preserveAspectRatio="none"><polyline points="600,0 600,15 400,15 400,40 200,40 200,65 600,65 600,80" fill="none" stroke="#00e57a" stroke-width="1.5" stroke-opacity="0.4"/><circle cx="600" cy="0" r="3" fill="#00e57a" opacity="0.6"/><circle cx="600" cy="80" r="3" fill="#00e57a" opacity="0.6"/><rect x="192" y="32" width="16" height="16" fill="none" stroke="#00e57a" stroke-width="1" opacity="0.4"/><rect x="392" y="7" width="16" height="16" fill="none" stroke="#00e57a" stroke-width="1" opacity="0.4"/></svg></div>
+
 <!-- MARQUEE 2 -->
-<div class="mq" style="position:relative;z-index:20">
-  <div class="mq-t rev">
-    <span>Autonomous Navigation</span><span class="s">/</span><span>Motor Control</span><span class="s">/</span><span>iNav</span><span class="s">/</span><span>Mission Planner</span><span class="s">/</span><span>LiDAR</span><span class="s">/</span><span>Ultrasonic Sensors</span><span class="s">/</span><span>SpeedyBee FC</span><span class="s">/</span><span>Ansys CFD</span><span class="s">/</span><span>XFLR5</span><span class="s">/</span><span>Onshape</span><span class="s">/</span><span>3D Printing</span><span class="s">/</span><span>Python</span><span class="s">/</span><span>EasyEDA</span><span class="s">/</span><span>Arduino</span><span class="s">/</span>
-    <span>Autonomous Navigation</span><span class="s">/</span><span>Motor Control</span><span class="s">/</span><span>iNav</span><span class="s">/</span><span>Mission Planner</span><span class="s">/</span><span>LiDAR</span><span class="s">/</span><span>Ultrasonic Sensors</span><span class="s">/</span><span>SpeedyBee FC</span><span class="s">/</span><span>Ansys CFD</span><span class="s">/</span><span class="s">/</span><span>Onshape</span><span class="s">/</span><span>3D Printing</span><span class="s">/</span><span>Python</span><span class="s">/</span><span>EasyEDA</span><span class="s">/</span><span>Arduino</span><span class="s">/</span>
+<div class="mq"><div class="mq-t rev">
+  <span>Autonomous Navigation</span><span class="s">/</span><span>Motor Control</span><span class="s">/</span><span>iNav</span><span class="s">/</span><span>Mission Planner</span><span class="s">/</span><span>LiDAR</span><span class="s">/</span><span>SpeedyBee FC</span><span class="s">/</span><span>Ansys CFD</span><span class="s">/</span><span>XFLR5</span><span class="s">/</span><span>3D Printing</span><span class="s">/</span><span>Python</span><span class="s">/</span><span>EasyEDA</span><span class="s">/</span><span>Arduino</span><span class="s">/</span>
+  <span>Autonomous Navigation</span><span class="s">/</span><span>Motor Control</span><span class="s">/</span><span>iNav</span><span class="s">/</span><span>Mission Planner</span><span class="s">/</span><span>LiDAR</span><span class="s">/</span><span>SpeedyBee FC</span><span class="s">/</span><span>Ansys CFD</span><span class="s">/</span><span>XFLR5</span><span class="s">/</span><span>3D Printing</span><span class="s">/</span><span>Python</span><span class="s">/</span><span>EasyEDA</span><span class="s">/</span><span>Arduino</span><span class="s">/</span>
+</div></div>
+
+<!-- ═══ PROJECTS (with drone model) ═══ -->
+<section class="section alt" id="projects">
+  <div class="section-inner">
+    <div class="sec-hd rv"><span class="sec-n">02</span><span class="sec-l"></span><span class="sec-t">PROJECTS</span><span class="sec-l"></span><span class="sec-n">02</span></div>
+    <div class="sec-split rv">
+      <div>
+        <p style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(0,229,122,0.5);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:32px">Coming soon — projects being assembled</p>
+      </div>
+      <div class="model-wrap rr">
+        <canvas id="drone-canvas"></canvas>
+        <div class="model-label">● DRONE FRAME — WIREFRAME</div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- PLACEHOLDER SECTIONS -->
-<section id="projects"   class="panel darker-sec" style="min-height:80px"></section>
-<section id="experience" class="panel dark-sec"   style="min-height:80px"></section>
-<section id="skills"     class="panel darker-sec" style="min-height:80px"></section>
-<section id="contact"    class="panel dark-sec"   style="min-height:80px"></section>
+<!-- TRACE CONNECTOR 3 -->
+<div class="trace-connector"><svg viewBox="0 0 1200 80" preserveAspectRatio="none"><polyline points="600,0 600,20 800,20 800,40 1000,40 1000,60 600,60 600,80" fill="none" stroke="#00e57a" stroke-width="1.5" stroke-opacity="0.4"/><circle cx="600" cy="0" r="3" fill="#00e57a" opacity="0.6"/><circle cx="600" cy="80" r="3" fill="#00e57a" opacity="0.6"/><rect x="792" y="12" width="16" height="16" fill="none" stroke="#00e57a" stroke-width="1" opacity="0.4"/><rect x="992" y="32" width="16" height="16" fill="none" stroke="#00e57a" stroke-width="1" opacity="0.4"/></svg></div>
 
-</div><!-- /scroll-root -->
+<!-- ═══ EXPERIENCE (with robot model) ═══ -->
+<section class="section" id="experience">
+  <div class="section-inner">
+    <div class="sec-hd rv"><span class="sec-n">03</span><span class="sec-l"></span><span class="sec-t">EXPERIENCE</span><span class="sec-l"></span><span class="sec-n">03</span></div>
+    <div class="sec-split flip rv">
+      <div class="model-wrap rl">
+        <canvas id="robot-canvas"></canvas>
+        <div class="model-label">● ROBOT ARM — WIREFRAME</div>
+      </div>
+      <div>
+        <p style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(0,229,122,0.5);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:32px">Coming soon — experience being wired up</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<!-- THREE.JS -->
+<!-- TRACE CONNECTOR 4 -->
+<div class="trace-connector"><svg viewBox="0 0 1200 80" preserveAspectRatio="none"><polyline points="600,0 600,15 300,15 300,65 600,65 600,80" fill="none" stroke="#00e57a" stroke-width="1.5" stroke-opacity="0.4"/><circle cx="600" cy="0" r="3" fill="#00e57a" opacity="0.6"/><circle cx="600" cy="80" r="3" fill="#00e57a" opacity="0.6"/></svg></div>
+
+<!-- ═══ SKILLS (with chip model) ═══ -->
+<section class="section alt" id="skills">
+  <div class="section-inner">
+    <div class="sec-hd rv"><span class="sec-n">04</span><span class="sec-l"></span><span class="sec-t">SKILLS</span><span class="sec-l"></span><span class="sec-n">04</span></div>
+    <div class="sec-split rv">
+      <div>
+        <p style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(0,229,122,0.5);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:32px">Coming soon — skills being loaded</p>
+      </div>
+      <div class="model-wrap rr">
+        <canvas id="chip-canvas"></canvas>
+        <div class="model-label">● MCU CHIP — WIREFRAME</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRACE CONNECTOR 5 -->
+<div class="trace-connector"><svg viewBox="0 0 1200 80" preserveAspectRatio="none"><polyline points="600,0 600,20 750,20 750,60 600,60 600,80" fill="none" stroke="#00e57a" stroke-width="1.5" stroke-opacity="0.4"/><circle cx="600" cy="0" r="3" fill="#00e57a" opacity="0.6"/><circle cx="600" cy="80" r="3" fill="#00e57a" opacity="0.6"/></svg></div>
+
+<!-- ═══ CONTACT (with oscope model) ═══ -->
+<section class="section" id="contact">
+  <div class="section-inner">
+    <div class="sec-hd rv"><span class="sec-n">05</span><span class="sec-l"></span><span class="sec-t">CONTACT</span><span class="sec-l"></span><span class="sec-n">05</span></div>
+    <div class="sec-split flip rv">
+      <div class="model-wrap rl">
+        <canvas id="oscope-canvas"></canvas>
+        <div class="model-label">● OSCILLOSCOPE — ATE</div>
+      </div>
+      <div>
+        <p style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(0,229,122,0.5);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:32px">Coming soon — contact being patched in</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-/* ══════════════════════════════════════════════════════
-   THREE.JS  —  PCB FLYTHROUGH + SECTION MODELS
-══════════════════════════════════════════════════════ */
+/* ── HERO PCB canvas (2D) ── */
 (function(){
-  const G = 0x00e57a; // green hex
-
-  /* ── renderer ── */
-  const renderer = new THREE.WebGLRenderer({
-    canvas: document.getElementById('three-canvas'),
-    antialias: true, alpha: true
-  });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0x000000, 0);
-
-  /* ── scene + camera ── */
-  const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 2000);
-  camera.position.set(0, 0, 5);
-
-  /* ── lighting ── */
-  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
-  const dLight = new THREE.DirectionalLight(0x00e57a, 0.8);
-  dLight.position.set(5,5,5);
-  scene.add(dLight);
-  const pLight = new THREE.PointLight(0x00e57a, 1.5, 30);
-  pLight.position.set(0,0,4);
-  scene.add(pLight);
-
-  /* ── materials ── */
-  const wMat = new THREE.MeshBasicMaterial({color:0x00e57a, wireframe:true, transparent:true, opacity:0.55});
-  const lMat = new THREE.LineBasicMaterial({color:0x00e57a, transparent:true, opacity:0.7});
-  const dimMat = new THREE.LineBasicMaterial({color:0x00e57a, transparent:true, opacity:0.1});
-
-  /* ══ PCB BOARD (always-present background) ══ */
-  const pcbGroup = new THREE.Group();
-  scene.add(pcbGroup);
-
-  /* board plane */
-  const boardGeo = new THREE.PlaneGeometry(28, 40, 28, 40);
-  const boardMat = new THREE.MeshBasicMaterial({color:0x001a0a, transparent:true, opacity:0.55, side:THREE.DoubleSide});
-  const board = new THREE.Mesh(boardGeo, boardMat);
-  board.position.z = -2;
-  pcbGroup.add(board);
-
-  /* PCB grid lines */
-  const gridMat = new THREE.LineBasicMaterial({color:0x00e57a, transparent:true, opacity:0.08});
-  for(let i=-14;i<=14;i+=1.4){
-    const hg = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-14,i,-1.9),new THREE.Vector3(14,i,-1.9)]);
-    pcbGroup.add(new THREE.Line(hg, gridMat));
-    const vg = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i,-20,-1.9),new THREE.Vector3(i,20,-1.9)]);
-    pcbGroup.add(new THREE.Line(vg, gridMat));
+  const c=document.getElementById('hero-canvas'),x=c.getContext('2d');
+  function draw(){
+    c.width=c.offsetWidth;c.height=c.offsetHeight;
+    const W=c.width,H=c.height,G=40;
+    x.clearRect(0,0,W,H);
+    for(let px=0;px<=W;px+=G){for(let py=0;py<=H;py+=G){
+      if(Math.random()>0.3){x.beginPath();x.strokeStyle='rgba(0,229,122,0.2)';x.lineWidth=0.8;x.moveTo(px,py);const d=[[G,0],[0,G],[-G,0],[0,-G]][Math.floor(Math.random()*4)];x.lineTo(px+d[0],py+d[1]);x.stroke();}
+      if(Math.random()>0.52){x.beginPath();x.arc(px,py,2.5,0,Math.PI*2);x.fillStyle='rgba(0,229,122,0.5)';x.fill();}
+      if(Math.random()>0.84){x.strokeStyle='rgba(0,229,122,0.35)';x.lineWidth=0.8;x.strokeRect(px-5,py-4,10,8);}
+      if(Math.random()>0.9){x.beginPath();x.arc(px,py,5,0,Math.PI*2);x.strokeStyle='rgba(0,229,122,0.28)';x.lineWidth=0.9;x.stroke();}
+    }}
+    for(let i=0;i<20;i++){const sx=Math.floor(Math.random()*(W/G))*G,sy=Math.floor(Math.random()*(H/G))*G,len=(3+Math.floor(Math.random()*6))*G;x.beginPath();x.moveTo(sx,sy);Math.random()>0.5?x.lineTo(sx+len,sy):x.lineTo(sx,sy+len);x.strokeStyle='rgba(0,229,122,0.32)';x.lineWidth=1.5;x.stroke();}
   }
-
-  /* ══ PCB TRACES (the path we fly through) ══ */
-  const traceGroup = new THREE.Group();
-  scene.add(traceGroup);
-  const traces = [];
-
-  function makeTrace(pts, opacity){
-    const geo = new THREE.BufferGeometry().setFromPoints(pts.map(p=>new THREE.Vector3(...p)));
-    const mat = new THREE.LineBasicMaterial({color:0x00e57a, transparent:true, opacity: opacity||0.6});
-    const line = new THREE.Line(geo, mat);
-    traceGroup.add(line);
-    traces.push({line, mat, pts});
-    return line;
-  }
-
-  /* main spine trace — runs top to bottom of page journey */
-  const spinePoints = [];
-  for(let y=8; y>=-35; y-=0.5) spinePoints.push([0, y, -1.8]);
-  makeTrace(spinePoints, 0.9);
-
-  /* branching traces off the spine */
-  const branches = [
-    [[0,6,-1.8],[4,6,-1.8],[4,4,-1.8],[7,4,-1.8]],
-    [[0,6,-1.8],[-4,6,-1.8],[-4,4,-1.8],[-7,4,-1.8]],
-    [[0,0,-1.8],[5,0,-1.8],[5,-2,-1.8],[8,-2,-1.8]],
-    [[0,0,-1.8],[-5,0,-1.8],[-5,-2,-1.8],[-8,-2,-1.8]],
-    [[0,-8,-1.8],[6,-8,-1.8],[6,-12,-1.8]],
-    [[0,-8,-1.8],[-6,-8,-1.8],[-6,-12,-1.8]],
-    [[0,-18,-1.8],[5,-18,-1.8],[5,-22,-1.8],[9,-22,-1.8]],
-    [[0,-18,-1.8],[-5,-18,-1.8],[-5,-22,-1.8],[-9,-22,-1.8]],
-    [[4,6,-1.8],[4,2,-1.8],[6,2,-1.8],[6,-1,-1.8]],
-    [[-4,6,-1.8],[-4,2,-1.8],[-6,2,-1.8],[-6,-1,-1.8]],
-  ];
-  branches.forEach(b => makeTrace(b, 0.45));
-
-  /* pads / vias */
-  const padGroup = new THREE.Group();
-  scene.add(padGroup);
-  const padPositions = [
-    [7,4,-1.8],[- 7,4,-1.8],[8,-2,-1.8],[-8,-2,-1.8],
-    [6,-12,-1.8],[-6,-12,-1.8],[9,-22,-1.8],[-9,-22,-1.8],
-    [6,2,-1.8],[-6,2,-1.8],[0,-28,-1.8],[0,8,-1.8]
-  ];
-  padPositions.forEach(p=>{
-    const ring = new THREE.RingGeometry(0.18,0.3,16);
-    const rMat = new THREE.MeshBasicMaterial({color:0x00e57a, side:THREE.DoubleSide, transparent:true, opacity:0.7});
-    const mesh = new THREE.Mesh(ring, rMat);
-    mesh.position.set(...p);
-    padGroup.add(mesh);
-    const inner = new THREE.Mesh(new THREE.CircleGeometry(0.1,16), new THREE.MeshBasicMaterial({color:0x00e57a,transparent:true,opacity:0.5}));
-    inner.position.set(...p);
-    padGroup.add(inner);
-  });
-
-  /* IC components at section nodes */
-  function makeIC(x,y,z,w,h){
-    const g = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.BoxGeometry(w,h,0.15), new THREE.MeshBasicMaterial({color:0x001a0a,transparent:true,opacity:0.9}));
-    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,h,0.15)), lMat.clone());
-    g.add(body); g.add(edges);
-    const pinCount = 4;
-    const pinMat = new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.6});
-    for(let i=0;i<pinCount;i++){
-      const py = -h/2 + h/(pinCount-1)*i;
-      const lg = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(w/2,py,0.1),new THREE.Vector3(w/2+0.3,py,0.1)]);
-      g.add(new THREE.Line(lg,pinMat));
-      const lg2 = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-w/2,py,0.1),new THREE.Vector3(-w/2-0.3,py,0.1)]);
-      g.add(new THREE.Line(lg2,pinMat));
-    }
-    g.position.set(x,y,z);
-    return g;
-  }
-
-  const ic1 = makeIC(0, 4, -1.7, 2.5, 1.8);
-  const ic2 = makeIC(0, -4, -1.7, 3, 2);
-  const ic3 = makeIC(0, -14, -1.7, 2.8, 2);
-  const ic4 = makeIC(0, -24, -1.7, 3.2, 2.2);
-  [ic1,ic2,ic3,ic4].forEach(ic=>scene.add(ic));
-
-  /* ══ SECTION 3D MODELS ══ */
-
-  /* --- DRONE (for Projects section) --- */
-  function makeDrone(){
-    const g = new THREE.Group();
-    const frameMat = new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.8});
-    /* body */
-    const bodyEdges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.2,0.3,1.2)), frameMat.clone());
-    g.add(bodyEdges);
-    /* 4 arms */
-    const armOffsets = [[1.4,0,1.4],[-1.4,0,1.4],[1.4,0,-1.4],[-1.4,0,-1.4]];
-    armOffsets.forEach(([ax,ay,az])=>{
-      const armGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0),new THREE.Vector3(ax*0.5,ay,az*0.5)]);
-      g.add(new THREE.Line(armGeo, frameMat.clone()));
-      /* motor mount */
-      const motorEdges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.25,0.25,0.15,12)), frameMat.clone());
-      motorEdges.position.set(ax*0.5,ay,az*0.5);
-      g.add(motorEdges);
-      /* propeller blades */
-      for(let b=0;b<2;b++){
-        const angle = b*Math.PI;
-        const bGeo = new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(ax*0.5+Math.cos(angle)*0.6,ay+0.1,az*0.5+Math.sin(angle)*0.1),
-          new THREE.Vector3(ax*0.5,ay+0.1,az*0.5),
-          new THREE.Vector3(ax*0.5+Math.cos(angle+Math.PI)*0.6,ay+0.1,az*0.5+Math.sin(angle+Math.PI)*0.1),
-        ]);
-        g.add(new THREE.Line(bGeo, frameMat.clone()));
-      }
-    });
-    /* landing gear */
-    [[-0.5,0.5],[-0.5,-0.5],[0.5,0.5],[0.5,-0.5]].forEach(([lx,lz])=>{
-      const lgGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(lx,-0.15,lz),new THREE.Vector3(lx,-0.45,lz)]);
-      g.add(new THREE.Line(lgGeo,frameMat.clone()));
-    });
-    const skidGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-0.5,-0.45,0.5),new THREE.Vector3(0.5,-0.45,0.5)]);
-    g.add(new THREE.Line(skidGeo,frameMat.clone()));
-    const skid2 = skidGeo.clone(); g.add(new THREE.Line(skid2,frameMat.clone()));
-    return g;
-  }
-
-  /* --- ROBOT ARM (for Experience section) --- */
-  function makeRobot(){
-    const g = new THREE.Group();
-    const m = new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.8});
-    /* base */
-    g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.6,0.7,0.2,12)),m.clone()));
-    /* link 1 */
-    const l1 = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(0.3,1.2,0.3)),m.clone());
-    l1.position.set(0,0.7,0);
-    g.add(l1);
-    /* joint 1 */
-    const j1 = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.SphereGeometry(0.22,8,8)),m.clone());
-    j1.position.set(0,1.3,0);
-    g.add(j1);
-    /* link 2 */
-    const l2 = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(0.25,1.0,0.25)),m.clone());
-    l2.position.set(0.4,1.8,0); l2.rotation.z = -0.5;
-    g.add(l2);
-    /* joint 2 */
-    const j2 = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.SphereGeometry(0.18,8,8)),m.clone());
-    j2.position.set(0.85,2.2,0);
-    g.add(j2);
-    /* end effector */
-    const ef = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(0.4,0.12,0.3)),m.clone());
-    ef.position.set(1.1,2.35,0);
-    g.add(ef);
-    [[-0.15,0],[0.15,0]].forEach(([ex,ez])=>{
-      const fg = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(1.1+ex,2.35,ez),new THREE.Vector3(1.1+ex,2.15,ez)]);
-      g.add(new THREE.Line(fg,m.clone()));
-    });
-    return g;
-  }
-
-  /* --- IC CHIP (for Skills section) --- */
-  function makeChip(){
-    const g = new THREE.Group();
-    const m = new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.8});
-    /* body */
-    g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2,2,0.3)),m.clone()));
-    /* notch */
-    const notch = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.15,0.15,0.35,12)),m.clone());
-    notch.position.set(-0.7,1,0); notch.rotation.x=Math.PI/2;
-    g.add(notch);
-    /* pins all 4 sides */
-    for(let side=0;side<4;side++){
-      const angle = side*Math.PI/2;
-      for(let pin=-2;pin<=2;pin++){
-        const px = Math.cos(angle)*(1.2) - Math.sin(angle)*(pin*0.3);
-        const py = Math.sin(angle)*(1.2) + Math.cos(angle)*(pin*0.3);
-        const px2 = Math.cos(angle)*(1.55) - Math.sin(angle)*(pin*0.3);
-        const py2 = Math.sin(angle)*(1.55) + Math.cos(angle)*(pin*0.3);
-        const pg = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(px,py,0),new THREE.Vector3(px2,py2,0)]);
-        g.add(new THREE.Line(pg,m.clone()));
-      }
-    }
-    /* die markings on top */
-    for(let i=0;i<3;i++){
-      for(let j=0;j<3;j++){
-        const dot = new THREE.Mesh(new THREE.CircleGeometry(0.07,8),new THREE.MeshBasicMaterial({color:0x00e57a,transparent:true,opacity:0.4,side:THREE.DoubleSide}));
-        dot.position.set(-0.55+i*0.55, -0.55+j*0.55, 0.16);
-        g.add(dot);
-      }
-    }
-    return g;
-  }
-
-  /* --- OSCILLOSCOPE WAVEFORM (for Contact section) --- */
-  function makeOscope(){
-    const g = new THREE.Group();
-    const m = new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.8});
-    /* screen bezel */
-    g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3,2,0.2)),m.clone()));
-    /* screen grid */
-    for(let i=-1;i<=1;i++){
-      const hg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-1.3,i*0.6,0.15),new THREE.Vector3(1.3,i*0.6,0.15)]);
-      g.add(new THREE.Line(hg,new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.25})));
-      const vg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i*0.8,-0.9,0.15),new THREE.Vector3(i*0.8,0.9,0.15)]);
-      g.add(new THREE.Line(vg,new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.25})));
-    }
-    /* waveform */
-    const wavePts=[];
-    for(let x=-1.2;x<=1.2;x+=0.05){
-      wavePts.push(new THREE.Vector3(x, Math.sin(x*4)*0.55, 0.15));
-    }
-    const waveGeo=new THREE.BufferGeometry().setFromPoints(wavePts);
-    g.add(new THREE.Line(waveGeo,new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.9})));
-    /* knobs */
-    [[-1.1,-1.1],[0,-1.1],[1.1,-1.1]].forEach(([kx,ky])=>{
-      g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.12,0.12,0.15,12)),m.clone()));
-      const kn=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.12,0.12,0.15,12)),m.clone());
-      kn.position.set(kx,ky,-0.02); kn.rotation.x=Math.PI/2;
-      g.add(kn);
-    });
-    return g;
-  }
-
-  const droneModel   = makeDrone();
-  const robotModel   = makeRobot();
-  const chipModel    = makeChip();
-  const oscopeModel  = makeOscope();
-
-  const sectionModels = [
-    {model: droneModel,  section:'projects',   label:'● DRONE FRAME — WIREFRAME', yOffset:0},
-    {model: robotModel,  section:'experience', label:'● ROBOT ARM — WIREFRAME',   yOffset:-0.5},
-    {model: chipModel,   section:'skills',     label:'● MCU CHIP — WIREFRAME',    yOffset:0},
-    {model: oscopeModel, section:'contact',    label:'● OSCILLOSCOPE — ATE',      yOffset:0},
-  ];
-
-  sectionModels.forEach(({model})=>{
-    model.visible = false;
-    model.position.set(3.2, 0, 1);
-    model.scale.set(0.9,0.9,0.9);
-    scene.add(model);
-  });
-
-  /* ══ SIGNAL PARTICLE (travels down spine trace) ══ */
-  const signalGeo = new THREE.SphereGeometry(0.12, 12, 12);
-  const signalMat = new THREE.MeshBasicMaterial({color:0x00e57a});
-  const signal    = new THREE.Mesh(signalGeo, signalMat);
-  scene.add(signal);
-
-  /* glow ring around signal */
-  const glowGeo = new THREE.RingGeometry(0.18,0.36,20);
-  const glowMat = new THREE.MeshBasicMaterial({color:0x00e57a,transparent:true,opacity:0.4,side:THREE.DoubleSide});
-  const glow    = new THREE.Mesh(glowGeo, glowMat);
-  scene.add(glow);
-
-  /* ══ SCROLL CAMERA PATH ══ */
-  /* camera flies from top-of-PCB down through it, then z-rises to show section models */
-  const camPath = [
-    {prog:0,    pos:[0,  2,   6.0], target:[0,  0,    0]},
-    {prog:0.08, pos:[0,  1.5, 5.0], target:[0,  0,   -1]},
-    {prog:0.18, pos:[0,  0,   3.5], target:[0, -2,   -1.5]},
-    {prog:0.28, pos:[1, -2,   3.0], target:[0, -5,   -1.5]},
-    {prog:0.38, pos:[-1,-6,   2.5], target:[0, -8,   -1.8]},
-    {prog:0.48, pos:[0, -10,  2.8], target:[0, -13,  -1.8]},
-    {prog:0.58, pos:[1, -14,  3.0], target:[0, -17,  -1.8]},
-    {prog:0.68, pos:[0, -18,  3.2], target:[0, -22,  -1.8]},
-    {prog:0.78, pos:[-1,-22,  3.0], target:[0, -26,  -1.8]},
-    {prog:0.88, pos:[0, -26,  3.5], target:[0, -30,  -1.8]},
-    {prog:1.0,  pos:[0, -30,  5.0], target:[0, -32,  -1.8]},
-  ];
-
-  function lerpCamPath(prog){
-    let a=camPath[0], b=camPath[camPath.length-1];
-    for(let i=0;i<camPath.length-1;i++){
-      if(prog>=camPath[i].prog && prog<=camPath[i+1].prog){a=camPath[i];b=camPath[i+1];break;}
-    }
-    const t = a.prog===b.prog ? 0 : (prog-a.prog)/(b.prog-a.prog);
-    const smooth = t*t*(3-2*t);
-    return {
-      pos:   a.pos.map((v,i)=>v+(b.pos[i]-v)*smooth),
-      target:a.target.map((v,i)=>v+(b.target[i]-v)*smooth)
-    };
-  }
-
-  /* signal position along spine */
-  function signalY(prog){
-    return 8 - prog * 43;
-  }
-
-  /* ══ SECTION DETECTION ══ */
-  const sectionEls = {
-    home:       document.getElementById('home'),
-    about:      document.getElementById('about'),
-    projects:   document.getElementById('projects'),
-    experience: document.getElementById('experience'),
-    skills:     document.getElementById('skills'),
-    contact:    document.getElementById('contact'),
-  };
-
-  function getScrollProg(){
-    const maxScroll = document.body.scrollHeight - window.innerHeight;
-    return maxScroll>0 ? Math.min(window.scrollY/maxScroll, 1) : 0;
-  }
-
-  function getActiveSection(){
-    const mid = window.scrollY + window.innerHeight*0.5;
-    const ids = ['contact','skills','experience','projects','about','home'];
-    for(const id of ids){
-      const el = sectionEls[id];
-      if(el && el.offsetTop <= mid) return id;
-    }
-    return 'home';
-  }
-
-  const modelLabels = {
-    projects:   '● DRONE FRAME — WIREFRAME',
-    experience: '● ROBOT ARM — WIREFRAME',
-    skills:     '● MCU CHIP — WIREFRAME',
-    contact:    '● OSCILLOSCOPE — ATE',
-    home:       '● PCB — FLYTHROUGH',
-    about:      '● PCB — FLYTHROUGH',
-  };
-
-  let currentSection = 'home';
-  let targetModelRot = 0;
-  const badge = document.getElementById('mbadge');
-
-  /* ══ ANIMATE ══ */
-  let t = 0;
-  function animate(){
-    requestAnimationFrame(animate);
-    t += 0.016;
-
-    const prog = getScrollProg();
-    const active = getActiveSection();
-
-    /* camera path */
-    const cam = lerpCamPath(prog);
-    camera.position.set(...cam.pos);
-    camera.lookAt(...cam.target);
-
-    /* signal dot */
-    const sy = signalY(prog);
-    signal.position.set(0, sy, -1.7);
-    glow.position.set(0, sy, -1.68);
-    glow.rotation.z = t * 2;
-    glow.scale.setScalar(1 + Math.sin(t*3)*0.15);
-    signalMat.opacity = 0.7+Math.sin(t*4)*0.3;
-
-    /* PCB slow drift */
-    pcbGroup.rotation.z = Math.sin(t*0.08)*0.015;
-
-    /* IC glow pulse */
-    [ic1,ic2,ic3,ic4].forEach((ic,i)=>{
-      ic.children.forEach(c=>{
-        if(c.material && c.material.opacity!==undefined && c.geometry && c.geometry.type==='EdgesGeometry'){
-          c.material.opacity = 0.3+Math.sin(t*1.5+i)*0.2;
-        }
-      });
-    });
-
-    /* section models */
-    if(active !== currentSection){
-      currentSection = active;
-      badge.textContent = modelLabels[active]||'● PCB — FLYTHROUGH';
-      badge.classList.add('show');
-    }
-
-    sectionModels.forEach(({model, section})=>{
-      const isActive = section===active;
-      model.visible = isActive;
-      if(isActive){
-        model.rotation.y = t * 0.5;
-        model.rotation.x = Math.sin(t*0.3)*0.2;
-        const scale = 0.9 + Math.sin(t*0.8)*0.05;
-        model.scale.setScalar(scale);
-        /* position to right of viewport */
-        model.position.set(3.2, cam.pos[1]-0.5, cam.pos[2]-2.5);
-      }
-    });
-
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  /* resize */
-  window.addEventListener('resize',()=>{
-    camera.aspect = window.innerWidth/window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
+  draw();window.addEventListener('resize',draw);
+  /* parallax on scroll */
+  window.addEventListener('scroll',()=>{c.style.transform='translateY('+(window.scrollY*0.12)+'px)';},{passive:true});
 })();
 
-/* ══ SCROLL PROGRESS ══ */
-window.addEventListener('scroll',()=>{
-  const p=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
-  document.getElementById('prog').style.width=Math.min(p,100)+'%';
-},{passive:true});
+/* ── THREE.JS helper: make renderer for a canvas ── */
+function makeScene(canvasId){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return null;
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setClearColor(0x000000,0);
+  const W=canvas.clientWidth||360,H=canvas.clientHeight||340;
+  renderer.setSize(W,H,false);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(50,W/H,0.1,100);
+  camera.position.set(0,0,5);
+  scene.add(new THREE.AmbientLight(0x00e57a,0.4));
+  const dl=new THREE.DirectionalLight(0x00e57a,1);dl.position.set(3,3,3);scene.add(dl);
+  return{renderer,scene,camera,canvas};
+}
 
-/* ══ NAV ══ */
-window.addEventListener('scroll',()=>{
-  document.getElementById('nav').classList.toggle('filled',window.scrollY>60);
-},{passive:true});
+const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.75});
 
-/* ══ ACTIVE NAV ══ */
-const _secs=document.querySelectorAll('section[id]');
-const _links=document.querySelectorAll('.nav-links a');
-new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      _links.forEach(a=>a.classList.remove('active'));
-      const m=document.querySelector('.nav-links a[href="#'+e.target.id+'"]');
-      if(m)m.classList.add('active');
+/* ── DRONE ── */
+(function(){
+  const s=makeScene('drone-canvas');if(!s)return;
+  const{renderer,scene,camera}=s;
+  const g=new THREE.Group();
+  g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1,0.25,1)),wMat()));
+  [[1.3,0,1.3],[-1.3,0,1.3],[1.3,0,-1.3],[-1.3,0,-1.3]].forEach(([ax,ay,az])=>{
+    const ag=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0),new THREE.Vector3(ax*0.5,0,az*0.5)]);
+    g.add(new THREE.Line(ag,wMat()));
+    const m=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.22,0.22,0.12,12)),wMat());
+    m.position.set(ax*0.5,0,az*0.5);g.add(m);
+    for(let b=0;b<2;b++){
+      const angle=b*Math.PI;
+      const bg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(ax*0.5+Math.cos(angle)*0.55,0.08,az*0.5),new THREE.Vector3(ax*0.5,0.08,az*0.5),new THREE.Vector3(ax*0.5-Math.cos(angle)*0.55,0.08,az*0.5)]);
+      g.add(new THREE.Line(bg,wMat()));
     }
   });
-},{threshold:0.35}).observe.bind && _secs.forEach(s=>new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){_links.forEach(a=>a.classList.remove('active'));const m=document.querySelector('.nav-links a[href="#'+e.target.id+'"]');if(m)m.classList.add('active');}});
-},{threshold:0.35}).observe(s));
+  [[-0.4,0.3],[-0.4,-0.3],[0.4,0.3],[0.4,-0.3]].forEach(([lx,lz])=>{
+    const lg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(lx,-0.12,lz),new THREE.Vector3(lx,-0.38,lz)]);g.add(new THREE.Line(lg,wMat()));
+  });
+  const sk=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-0.4,-0.38,0.3),new THREE.Vector3(0.4,-0.38,0.3)]);
+  g.add(new THREE.Line(sk,wMat()));
+  const sk2=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-0.4,-0.38,-0.3),new THREE.Vector3(0.4,-0.38,-0.3)]);
+  g.add(new THREE.Line(sk2,wMat()));
+  scene.add(g);
+  let t=0;
+  (function loop(){requestAnimationFrame(loop);t+=0.012;g.rotation.y=t*0.6;g.rotation.x=Math.sin(t*0.4)*0.18;g.position.y=Math.sin(t*0.8)*0.12;renderer.render(scene,camera);})();
+})();
 
-/* ══ HERO ENTRANCE ══ */
+/* ── ROBOT ARM ── */
+(function(){
+  const s=makeScene('robot-canvas');if(!s)return;
+  const{renderer,scene,camera}=s;
+  camera.position.set(2,2,5);
+  const g=new THREE.Group();
+  g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.55,0.65,0.18,12)),wMat()));
+  const l1=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(0.28,1.1,0.28)),wMat());l1.position.set(0,0.64,0);g.add(l1);
+  const j1=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.SphereGeometry(0.2,8,8)),wMat());j1.position.set(0,1.2,0);g.add(j1);
+  const l2=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(0.22,0.9,0.22)),wMat());l2.position.set(0.35,1.65,0);l2.rotation.z=-0.5;g.add(l2);
+  const j2=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.SphereGeometry(0.16,8,8)),wMat());j2.position.set(0.75,2.05,0);g.add(j2);
+  const ef=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(0.35,0.1,0.28)),wMat());ef.position.set(0.98,2.18,0);g.add(ef);
+  [[-0.12,0],[0.12,0]].forEach(([ex])=>{const fg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0.98+ex,2.18,0),new THREE.Vector3(0.98+ex,2.0,0)]);g.add(new THREE.Line(fg,wMat()));});
+  scene.add(g);
+  let t=0;
+  (function loop(){requestAnimationFrame(loop);t+=0.01;g.rotation.y=t*0.5;j2.rotation.z=Math.sin(t*0.7)*0.3;renderer.render(scene,camera);})();
+})();
+
+/* ── CHIP ── */
+(function(){
+  const s=makeScene('chip-canvas');if(!s)return;
+  const{renderer,scene,camera}=s;
+  const g=new THREE.Group();
+  g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2,2,0.28)),wMat()));
+  for(let side=0;side<4;side++){const angle=side*Math.PI/2;for(let pin=-2;pin<=2;pin++){const px=Math.cos(angle)*1.18-Math.sin(angle)*(pin*0.28),py=Math.sin(angle)*1.18+Math.cos(angle)*(pin*0.28),px2=Math.cos(angle)*1.5-Math.sin(angle)*(pin*0.28),py2=Math.sin(angle)*1.5+Math.cos(angle)*(pin*0.28);const pg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(px,py,0),new THREE.Vector3(px2,py2,0)]);g.add(new THREE.Line(pg,wMat()));}}
+  for(let i=0;i<3;i++){for(let j=0;j<3;j++){const dot=new THREE.Mesh(new THREE.CircleGeometry(0.07,8),new THREE.MeshBasicMaterial({color:0x00e57a,transparent:true,opacity:0.45,side:THREE.DoubleSide}));dot.position.set(-0.5+i*0.5,-0.5+j*0.5,0.15);g.add(dot);}}
+  scene.add(g);
+  let t=0;
+  (function loop(){requestAnimationFrame(loop);t+=0.01;g.rotation.y=t*0.55;g.rotation.x=Math.sin(t*0.35)*0.22;renderer.render(scene,camera);})();
+})();
+
+/* ── OSCILLOSCOPE ── */
+(function(){
+  const s=makeScene('oscope-canvas');if(!s)return;
+  const{renderer,scene,camera}=s;
+  camera.position.set(0,0,6);
+  const g=new THREE.Group();
+  g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3,2,0.18)),wMat()));
+  const screenMat=new THREE.MeshBasicMaterial({color:0x001a0a,transparent:true,opacity:0.8,side:THREE.DoubleSide});
+  const screen=new THREE.Mesh(new THREE.PlaneGeometry(2.5,1.6),screenMat);screen.position.z=0.1;g.add(screen);
+  const gridM=new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.2});
+  for(let i=-1;i<=1;i++){const h=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-1.1,i*0.5,0.12),new THREE.Vector3(1.1,i*0.5,0.12)]);g.add(new THREE.Line(h,gridM));const v=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i*0.7,-0.75,0.12),new THREE.Vector3(i*0.7,0.75,0.12)]);g.add(new THREE.Line(v,gridM));}
+  let wavePhase=0;
+  const wavePts=[];for(let x=-1.1;x<=1.1;x+=0.04)wavePts.push(new THREE.Vector3(x,0,0.13));
+  const waveGeo=new THREE.BufferGeometry().setFromPoints(wavePts);
+  const waveLine=new THREE.Line(waveGeo,new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.95}));
+  g.add(waveLine);
+  [[- 0.9,-1.15],[0,-1.15],[0.9,-1.15]].forEach(([kx,ky])=>{const k=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.CylinderGeometry(0.1,0.1,0.12,10)),wMat());k.position.set(kx,ky,0.1);k.rotation.x=Math.PI/2;g.add(k);});
+  scene.add(g);
+  let t=0;
+  (function loop(){requestAnimationFrame(loop);t+=0.015;wavePhase+=0.08;
+    const pos=waveGeo.attributes.position;
+    for(let i=0;i<pos.count;i++){const x=pos.getX(i);pos.setY(i,Math.sin(x*3+wavePhase)*0.45+Math.sin(x*7+wavePhase*1.3)*0.1);}
+    pos.needsUpdate=true;
+    g.rotation.y=Math.sin(t*0.3)*0.25;
+    renderer.render(scene,camera);})();
+})();
+
+/* ── PROGRESS BAR ── */
+window.addEventListener('scroll',()=>{const p=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;document.getElementById('prog').style.width=Math.min(p,100)+'%';},{passive:true});
+
+/* ── NAV ── */
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('filled',window.scrollY>60);},{passive:true});
+
+/* ── ACTIVE NAV ── */
+document.querySelectorAll('section[id]').forEach(sec=>{
+  new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));const m=document.querySelector('.nav-links a[href="#'+e.target.id+'"]');if(m)m.classList.add('active');}});},{threshold:0.35}).observe(sec);
+});
+
+/* ── HERO ENTRANCE ── */
 window.addEventListener('load',()=>{
   [['ey',0],['hn',200],['hs',400],['hb',600],['sc',850]].forEach(([id,d])=>{
-    setTimeout(()=>{
-      const el=document.getElementById(id);
-      if(el){el.style.opacity='1';el.style.transform='translateY(0)';}
-    },d);
+    setTimeout(()=>{const el=document.getElementById(id);if(el){el.style.opacity='1';el.style.transform='translateY(0)';}},d);
   });
 });
 
-/* ══ SCROLL REVEAL ══ */
-new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');});
-},{threshold:0.12}).observe.bind && document.querySelectorAll('.rv,.rl,.rr').forEach(el=>{
+/* ── SCROLL REVEAL ── */
+document.querySelectorAll('.rv,.rl,.rr').forEach(el=>{
   new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');});},{threshold:0.12}).observe(el);
 });
 </script>
