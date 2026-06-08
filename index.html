@@ -40,9 +40,9 @@ nav.filled{background:rgba(3,8,5,0.95);backdrop-filter:blur(14px);border-bottom:
 .btn-p:hover{background:#00ff8c;transform:translateY(-2px)}
 .btn-o{background:transparent;color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.18)}
 .btn-o:hover{border-color:var(--g);color:var(--g);transform:translateY(-2px)}
-.scroll-cue{display:flex;flex-direction:column;align-items:center;gap:7px;margin-top:50px;color:rgba(255,255,255,0.2);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;opacity:0;transition:opacity 1s 0.9s}
-.scroll-line{width:1px;height:40px;background:var(--g);opacity:0.4;animation:sl 2s ease-in-out infinite}
-@keyframes sl{0%,100%{transform:scaleY(1);opacity:0.3}50%{transform:scaleY(1.2);opacity:0.8}}
+
+
+50%{transform:scaleY(1.2);opacity:0.8}}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
 /* STATS */
@@ -168,7 +168,7 @@ nav.filled{background:rgba(3,8,5,0.95);backdrop-filter:blur(14px);border-bottom:
         Contact
       </a>
     </div>
-    <div class="scroll-cue" id="sc"><div class="scroll-line"></div>Scroll</div>
+    
   </div>
 </section>
 
@@ -286,14 +286,14 @@ nav.filled{background:rgba(3,8,5,0.95);backdrop-filter:blur(14px);border-bottom:
           </a>
         </div>
         <!-- 3D DRONE MODEL VIEWER -->
-        <div style="position:relative;background:#0d1f12;border-left:1px solid rgba(0,229,122,0.12);min-height:380px">
+        <div style="position:relative;background:#111111;border-left:1px solid rgba(255,255,255,0.06);min-height:380px">
           <canvas id="drone-canvas" style="width:100%;height:100%;display:block"></canvas>
           <div id="drone-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
             <div style="width:36px;height:36px;border:2px solid rgba(0,229,122,0.2);border-top-color:var(--g);border-radius:50%;animation:spin 0.8s linear infinite"></div>
             <span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(0,229,122,0.5);letter-spacing:0.12em;text-transform:uppercase">Loading model...</span>
           </div>
           <div style="position:absolute;bottom:12px;left:14px;font-family:'Space Mono',monospace;font-size:9px;color:rgba(0,229,122,0.5);letter-spacing:0.1em;text-transform:uppercase">● Drag to rotate</div>
-          <div style="position:absolute;top:12px;right:14px;font-family:'Space Mono',monospace;font-size:9px;color:rgba(0,229,122,0.4);letter-spacing:0.1em;text-transform:uppercase">Hexa Drone — GLB</div>
+          
         </div>
       </div>
     </div>
@@ -584,7 +584,7 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
 
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0x0d1f12, 1);
+  renderer.setClearColor(0x111111, 1);
   renderer.physicallyCorrectLights = true;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.4;
@@ -597,7 +597,7 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   }
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0d1f12);
+  scene.background = new THREE.Color(0x111111);
 
   const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 100);
   camera.position.set(0, 0.3, 3.8);
