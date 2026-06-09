@@ -1333,7 +1333,7 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   const loader = new THREE.GLTFLoader();
   loader.setDRACOLoader(dracoLoader);
 
-  loader.load('drone.glb',
+  loader.load('./drone.glb',
     (gltf) => {
       model = gltf.scene;
       const box = new THREE.Box3().setFromObject(model);
@@ -1534,6 +1534,250 @@ document.querySelectorAll('.rv,.rl,.rr').forEach(el=>{
   window.__mobileOptimised = true;
 })();
 
+
+/* ══════════════════════════════════════
+   ROBOT EASTER EGG — walks in after 10s inactivity on hero
+══════════════════════════════════════ */
+(function(){
+  let inactivityTimer = null;
+  let animating = false;
+  let onHero = true;
+
+  /* only run when user is on hero section */
+  window.addEventListener('scroll', () => {
+    onHero = window.scrollY < window.innerHeight * 0.5;
+    if(!onHero && inactivityTimer){ clearTimeout(inactivityTimer); inactivityTimer = null; }
+    if(onHero) resetTimer();
+  }, {passive:true});
+
+  ['mousemove','keydown','touchstart','click'].forEach(ev => {
+    window.addEventListener(ev, resetTimer, {passive:true});
+  });
+
+  function resetTimer(){
+    if(animating) return;
+    if(inactivityTimer) clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(startEasterEgg, 10000);
+  }
+
+  resetTimer();
+
+  /* ── CANVAS SETUP ── */
+  const stage   = document.getElementById('robot-stage');
+  const canvas  = document.getElementById('robot-walk-canvas');
+  if(!canvas) return;
+  const ctx     = canvas.getContext('2d');
+  if(!ctx) return;
+  const W = () => canvas.width  = canvas.offsetWidth;
+  const H = () => canvas.height = canvas.offsetHeight;
+
+  function resize(){ W(); H(); }
+  window.addEventListener('resize', resize);
+  resize();
+
+  /* ── ROBOT DRAW FUNCTION ── */
+  function drawRobot(x, y, scale, lookDir, legPhase, armPhase, eyeGlow){
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(scale * lookDir, scale); /* flip for direction */
+
+    const g = '#00e57a';
+    const gd = 'rgba(0,229,122,0.5)';
+    ctx.strokeStyle = g;
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = 'round';
+
+    /* body */
+    ctx.strokeRect(-10, -28, 20, 18);
+
+    /* head */
+    ctx.strokeRect(-7, -44, 14, 14);
+
+    /* eyes */
+    ctx.fillStyle = eyeGlow > 0.5 ? '#00ff8c' : gd;
+    ctx.beginPath(); ctx.arc(-3, -37, 2, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(3,  -37, 2, 0, Math.PI*2); ctx.fill();
+
+    /* antenna */
+    ctx.beginPath();
+    ctx.moveTo(0, -44); ctx.lineTo(0, -50);
+    ctx.moveTo(0, -50); ctx.lineTo(-3, -53);
+    ctx.moveTo(0, -50); ctx.lineTo(3,  -53);
+    ctx.stroke();
+
+    /* arms */
+    const aSwing = Math.sin(armPhase) * 12;
+    ctx.beginPath();
+    ctx.moveTo(-10, -24); ctx.lineTo(-18, -24 + aSwing);
+    ctx.moveTo(-18, -24 + aSwing); ctx.lineTo(-22, -18 + aSwing);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(10, -24); ctx.lineTo(18, -24 - aSwing);
+    ctx.moveTo(18, -24 - aSwing); ctx.lineTo(22, -18 - aSwing);
+    ctx.stroke();
+
+    /* legs */
+    const l1 = Math.sin(legPhase) * 8;
+    const l2 = Math.sin(legPhase + Math.PI) * 8;
+    ctx.beginPath();
+    ctx.moveTo(-5, -10); ctx.lineTo(-5 + l1, 4); ctx.lineTo(-5 + l1, 12);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(5, -10); ctx.lineTo(5 + l2, 4); ctx.lineTo(5 + l2, 12);
+    ctx.stroke();
+
+    /* feet */
+    ctx.beginPath();
+    ctx.moveTo(-5+l1, 12); ctx.lineTo(-10+l1, 12);
+    ctx.moveTo(5+l2,  12); ctx.lineTo(10+l2,  12);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  /* ── PLUG DRAW FUNCTION ── */
+  function drawPlug(x, y, plugged, alpha){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = '#00e57a';
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = 'round';
+
+    /* cable */
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.bezierCurveTo(x+20, y-10, x+30, y+10, x+45, y);
+    ctx.stroke();
+
+    /* plug head */
+    ctx.strokeRect(x+45, y-5, 12, 10);
+    ctx.beginPath();
+    ctx.moveTo(x+57, y-3); ctx.lineTo(x+62, y-3);
+    ctx.moveTo(x+57, y+3); ctx.lineTo(x+62, y+3);
+    ctx.stroke();
+
+    if(plugged){
+      /* socket */
+      ctx.strokeRect(x+62, y-7, 10, 14);
+      /* connected indicator */
+      ctx.fillStyle = '#00e57a';
+      ctx.beginPath(); ctx.arc(x+67, y, 2, 0, Math.PI*2); ctx.fill();
+    }
+
+    ctx.restore();
+  }
+
+  /* ── HERO FLICKER ── */
+  function flickerHero(on){
+    const hero = document.getElementById('home');
+    const content = hero.querySelector('.hero-content');
+    if(!content) return;
+    if(!on){
+      content.style.transition = 'opacity 0.1s';
+      content.style.opacity = '0';
+      content.style.filter = 'brightness(0)';
+    } else {
+      content.style.transition = 'opacity 0.05s';
+      content.style.opacity = '0.3';
+      setTimeout(()=>{ content.style.opacity='0'; }, 50);
+      setTimeout(()=>{ content.style.opacity='0.8'; content.style.filter='brightness(1.5)'; }, 100);
+      setTimeout(()=>{ content.style.opacity='0.4'; }, 200);
+      setTimeout(()=>{ content.style.opacity='1'; content.style.filter='brightness(1)'; content.style.transition='opacity 0.3s'; }, 300);
+    }
+  }
+
+  /* ── ANIMATION SEQUENCE ── */
+  function startEasterEgg(){
+    if(animating || !onHero) return;
+    animating = true;
+    stage.style.display = 'block';
+
+    const totalW = canvas.offsetWidth;
+    let frame = 0;
+    let robotX = -60;
+    const groundY = canvas.offsetHeight - 15;
+    let phase = 'walk-in';    /* walk-in → stop → look → unplug → wait → replug → walk-out */
+    let phaseFrame = 0;
+    let plugAlpha = 0;
+    let plugged = true;
+    let eyeGlow = 1;
+
+    /* target stop position — center-ish */
+    const stopX = totalW * 0.5;
+
+    function tick(){
+      resize();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const legPhase = frame * 0.18;
+      const armPhase = frame * 0.18;
+
+      if(phase === 'walk-in'){
+        robotX += 2.5;
+        drawRobot(robotX, groundY, 1, 1, legPhase, armPhase, eyeGlow);
+        if(robotX >= stopX){ phase = 'stop'; phaseFrame = 0; }
+
+      } else if(phase === 'stop'){
+        /* robot stops, looks at screen (eye glow pulses) */
+        drawRobot(robotX, groundY, 1, 1, 0, 0, Math.sin(phaseFrame * 0.15) > 0 ? 1 : 0.3);
+        phaseFrame++;
+        if(phaseFrame > 40){ phase = 'unplug'; phaseFrame = 0; }
+
+      } else if(phase === 'unplug'){
+        /* robot reaches arm up, plug appears then disconnects */
+        eyeGlow = 1;
+        drawRobot(robotX, groundY, 1, 1, 0, phaseFrame * 0.08, eyeGlow);
+        plugAlpha = Math.min(1, phaseFrame / 15);
+        plugged = phaseFrame < 30;
+        drawPlug(robotX - 30, groundY - 40, plugged, plugAlpha);
+        if(phaseFrame === 30){ flickerHero(false); }
+        phaseFrame++;
+        if(phaseFrame > 55){ phase = 'wait'; phaseFrame = 0; }
+
+      } else if(phase === 'wait'){
+        /* screen is off, robot tilts head */
+        drawRobot(robotX, groundY, 1, 1, 0, -0.3, Math.sin(phaseFrame*0.2)>0?1:0);
+        drawPlug(robotX - 30, groundY - 40, false, 1);
+        phaseFrame++;
+        if(phaseFrame > 35){ phase = 'replug'; phaseFrame = 0; }
+
+      } else if(phase === 'replug'){
+        /* robot plugs back in */
+        drawRobot(robotX, groundY, 1, 1, 0, phaseFrame * 0.06, eyeGlow);
+        plugged = phaseFrame > 20;
+        drawPlug(robotX - 30, groundY - 40, plugged, 1);
+        if(phaseFrame === 20){ flickerHero(true); }
+        phaseFrame++;
+        if(phaseFrame > 45){ phase = 'walk-out'; phaseFrame = 0; }
+
+      } else if(phase === 'walk-out'){
+        /* robot walks off screen to the right */
+        robotX += 2.5;
+        drawRobot(robotX, groundY, 1, 1, legPhase, armPhase, 0.5);
+        if(robotX > totalW + 80){
+          /* done */
+          stage.style.display = 'none';
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          animating = false;
+          resetTimer();
+          return;
+        }
+      }
+
+      frame++;
+      requestAnimationFrame(tick);
+    }
+
+    tick();
+  }
+})();
+
 </script>
+
+/* ── ROBOT EASTER EGG ── */
+<div id="robot-stage" style="position:fixed;bottom:0;left:0;right:0;height:120px;pointer-events:none;z-index:50;overflow:hidden;display:none">
+  <canvas id="robot-walk-canvas" style="width:100%;height:100%;display:block"></canvas>
+</div>
+
 </body>
 </html>
