@@ -2060,7 +2060,7 @@ function filterProjects(cat){
   var scene  = new THREE.Scene();
   scene.background = new THREE.Color(0x1a1a1a);
   var camera = new THREE.PerspectiveCamera(42,1,0.01,100);
-  camera.position.set(0,0.3,3.8);
+  camera.position.set(0,1.8,3.2);
   camera.lookAt(0,0,0);
 
   scene.add(new THREE.AmbientLight(0xffffff,2.5));
@@ -2109,8 +2109,8 @@ function filterProjects(cat){
     if(model){
       var now=Date.now(), timeSince=now-lastInteract;
       if(isDragging){ model.rotation.y=rotY; model.rotation.x=rotX; }
-      else if(!autoRot && timeSince>3000){ rotX+=(0-rotX)*0.04; rotY+=(0-rotY)*0.04; if(Math.abs(rotX)<0.01&&Math.abs(rotY)<0.01){rotX=0;rotY=0;autoRot=true;} model.rotation.x=rotX; model.rotation.y=rotY; }
-      else if(autoRot){ rotY=Math.sin(t*0.4)*0.52; model.rotation.y=rotY; model.rotation.x=rotX; }
+      else if(!autoRot && timeSince>3000){ rotX+=(-0.28-rotX)*0.04; rotY+=(0-rotY)*0.04; if(Math.abs(rotX+0.28)<0.01&&Math.abs(rotY)<0.01){rotX=-0.28;rotY=0;autoRot=true;} model.rotation.x=rotX; model.rotation.y=rotY; }
+      else if(autoRot){ rotY=Math.sin(t*0.4)*0.52; model.rotation.y=rotY; model.rotation.x=-0.28; }
       else { velX*=0.92;velY*=0.92;rotX+=velX;rotY+=velY; rotX=Math.max(-1,Math.min(1,rotX)); model.rotation.x=rotX; model.rotation.y=rotY; }
       model.position.y=Math.sin(t*0.6)*0.06;
       rim.position.x=Math.sin(t*0.5)*2;
