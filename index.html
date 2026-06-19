@@ -1948,10 +1948,12 @@ function filterProjects(cat){
   var camera = new THREE.PerspectiveCamera(42,1,0.01,100);
   camera.position.set(0,0.5,4);
 
-  scene.add(new THREE.AmbientLight(0xffffff,1.2));
-  var key=new THREE.DirectionalLight(0xffffff,3.0); key.position.set(4,5,4); scene.add(key);
-  var fill=new THREE.DirectionalLight(0xaaddff,1.2); fill.position.set(-4,2,-3); scene.add(fill);
-  var rim=new THREE.PointLight(0x00e57a,2.0,10); rim.position.set(0,-1,2.5); scene.add(rim);
+  scene.add(new THREE.AmbientLight(0xffffff,2.5));
+  var key=new THREE.DirectionalLight(0xffffff,4.5); key.position.set(4,5,4); scene.add(key);
+  var fill=new THREE.DirectionalLight(0xffffff,2.5); fill.position.set(-4,2,-3); scene.add(fill);
+  var top=new THREE.DirectionalLight(0xffffff,2.0); top.position.set(0,8,0); scene.add(top);
+  var front=new THREE.DirectionalLight(0xffffff,2.0); front.position.set(0,0,6); scene.add(front);
+  var rim=new THREE.PointLight(0x00e57a,1.0,10); rim.position.set(0,-1,2.5); scene.add(rim);
 
   var isDragging=false, prevX=0, prevY=0, rotX=0, rotY=0, velX=0, velY=0, autoRot=true, lastInteract=0;
 
@@ -2046,7 +2048,7 @@ function filterProjects(cat){
   renderer.setClearColor(0x111111,1);
   renderer.physicallyCorrectLights = true;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.4;
+  renderer.toneMappingExposure = 2.2;
 
   function resize(){
     var W=canvas.clientWidth, H=canvas.clientHeight;
@@ -2056,15 +2058,17 @@ function filterProjects(cat){
   }
 
   var scene  = new THREE.Scene();
-  scene.background = new THREE.Color(0x111111);
+  scene.background = new THREE.Color(0x1a1a1a);
   var camera = new THREE.PerspectiveCamera(42,1,0.01,100);
   camera.position.set(0,0.3,3.8);
   camera.lookAt(0,0,0);
 
-  scene.add(new THREE.AmbientLight(0xffffff,1.2));
-  var key=new THREE.DirectionalLight(0xffffff,3.0); key.position.set(4,5,4); scene.add(key);
-  var fill=new THREE.DirectionalLight(0xaaddff,1.2); fill.position.set(-4,2,-3); scene.add(fill);
-  var rim=new THREE.PointLight(0x00e57a,2.0,10); rim.position.set(0,-1,2.5); scene.add(rim);
+  scene.add(new THREE.AmbientLight(0xffffff,2.5));
+  var key=new THREE.DirectionalLight(0xffffff,4.5); key.position.set(4,5,4); scene.add(key);
+  var fill=new THREE.DirectionalLight(0xffffff,2.5); fill.position.set(-4,2,-3); scene.add(fill);
+  var top=new THREE.DirectionalLight(0xffffff,2.0); top.position.set(0,8,0); scene.add(top);
+  var front=new THREE.DirectionalLight(0xffffff,2.0); front.position.set(0,0,6); scene.add(front);
+  var rim=new THREE.PointLight(0x00e57a,1.0,10); rim.position.set(0,-1,2.5); scene.add(rim);
 
   var isDragging=false, prevX=0, prevY=0, rotX=0, rotY=0, velX=0, velY=0, autoRot=true, lastInteract=0;
   canvas.addEventListener('mousedown',function(e){isDragging=true;prevX=e.clientX;prevY=e.clientY;autoRot=false;lastInteract=Date.now();velX=0;velY=0;});
