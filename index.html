@@ -1337,7 +1337,7 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   renderer.setClearColor(0x111111, 1);
   renderer.physicallyCorrectLights = true;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.4;
+  renderer.toneMappingExposure = 2.2;
 
   function resize(){
     const W = canvas.clientWidth, H = canvas.clientHeight;
@@ -1449,7 +1449,7 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
         model.rotation.y = rotY;
         model.rotation.x = rotX;
       } else if(!autoRot && timeSince > REALIGN_DELAY){
-        /* realign phase — smoothly return to default and resume auto */
+        /* realign phase — smoothly return to front and resume oscillation */
         rotX += (0 - rotX) * 0.04;
         rotY += (0 - rotY) * 0.04;
         if(Math.abs(rotX) < 0.01 && Math.abs(rotY) < 0.01){
@@ -1458,8 +1458,8 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
         model.rotation.x = rotX;
         model.rotation.y = rotY;
       } else if(autoRot){
-        /* auto rotate */
-        rotY += 0.005;
+        /* oscillate gently around front — ±30 degrees */
+        rotY = Math.sin(t * 0.4) * 0.52;
         model.rotation.y = rotY;
         model.rotation.x = rotX;
       } else {
@@ -1934,7 +1934,7 @@ function filterProjects(cat){
   renderer.setClearColor(0x111111, 1);
   renderer.physicallyCorrectLights = true;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.4;
+  renderer.toneMappingExposure = 2.2;
 
   function resize(){
     var W=canvas.clientWidth, H=canvas.clientHeight||280;
@@ -2110,7 +2110,7 @@ function filterProjects(cat){
       var now=Date.now(), timeSince=now-lastInteract;
       if(isDragging){ model.rotation.y=rotY; model.rotation.x=rotX; }
       else if(!autoRot && timeSince>3000){ rotX+=(0-rotX)*0.04; rotY+=(0-rotY)*0.04; if(Math.abs(rotX)<0.01&&Math.abs(rotY)<0.01){rotX=0;rotY=0;autoRot=true;} model.rotation.x=rotX; model.rotation.y=rotY; }
-      else if(autoRot){ rotY+=0.005; model.rotation.y=rotY; model.rotation.x=rotX; }
+      else if(autoRot){ rotY=Math.sin(t*0.4)*0.52; model.rotation.y=rotY; model.rotation.x=rotX; }
       else { velX*=0.92;velY*=0.92;rotX+=velX;rotY+=velY; rotX=Math.max(-1,Math.min(1,rotX)); model.rotation.x=rotX; model.rotation.y=rotY; }
       model.position.y=Math.sin(t*0.6)*0.06;
       rim.position.x=Math.sin(t*0.5)*2;
