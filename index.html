@@ -447,19 +447,31 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
     <!-- PROJECT GRID -->
     <div id="proj-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
 
-      <!-- IAM3D 2024 — drone, 2nd place -->
-      <div class="proj-card rv d2" data-cat="drone" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:24px;transition:border-color 0.2s" onmouseover="this.style.borderColor='rgba(0,229,122,0.25)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
-          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--g);background:rgba(0,229,122,0.08);border:1px solid rgba(0,229,122,0.2);border-radius:4px;padding:3px 9px">🏆 2nd Place · National</span>
-          <span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.25)">Sep 2024</span>
+      <!-- IAM3D 2024 — drone, 2nd place — with 3D model -->
+      <div class="proj-card rv d2" data-cat="drone" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;transition:border-color 0.2s" onmouseover="this.style.borderColor='rgba(0,229,122,0.25)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <!-- 3D model viewer -->
+        <div style="position:relative;background:#111111;height:220px;border-bottom:1px solid rgba(255,255,255,0.06)">
+          <canvas id="quad-canvas" style="width:100%;height:100%;display:block"></canvas>
+          <div id="quad-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+            <div style="width:28px;height:28px;border:2px solid rgba(0,229,122,0.2);border-top-color:var(--g);border-radius:50%;animation:spin 0.8s linear infinite"></div>
+            <span style="font-family:'Space Mono',monospace;font-size:9px;color:rgba(0,229,122,0.5);letter-spacing:0.1em;text-transform:uppercase">Loading model...</span>
+          </div>
+          <div style="position:absolute;bottom:8px;left:10px;font-family:'Space Mono',monospace;font-size:8px;color:rgba(0,229,122,0.45);letter-spacing:0.08em;text-transform:uppercase">● Drag to rotate</div>
         </div>
-        <h4 style="font-size:15px;color:#fff;font-weight:500;margin-bottom:8px;line-height:1.4">3D Printed Cargo Drone<br>ASME IAM3D 2024</h4>
-        <p style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:16px">Designed and assembled an FPV quadcopter with 3D printed frame, modular architecture and custom electromagnetic payload mechanism. Performed ANSYS structural analysis, thrust calculations and full DFMEA. Secured 2nd place nationally at ASME EFx FISAT 2024.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"><span class="sk">Solidworks</span><span class="sk">Betaflight</span><span class="sk">ANSYS</span><span class="sk">SpeedyBee FC</span><span class="sk">3D Printing</span><span class="sk">DFMEA</span></div>
-        <a href="https://www.linkedin.com/posts/akhilsebastian5527_iam3d-efxcompetition-fpvdrone-activity-7248295469443940352-t7Ep/" target="_blank" target="_blank" style="display:inline-flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;font-size:10px;color:var(--g);letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;border:1px solid rgba(0,229,122,0.25);border-radius:3px;padding:7px 14px;transition:all 0.2s" onmouseover="this.style.background='rgba(0,229,122,0.07)'" onmouseout="this.style.background='transparent'">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          View on LinkedIn
-        </a>
+        <!-- content -->
+        <div style="padding:20px 22px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--g);background:rgba(0,229,122,0.08);border:1px solid rgba(0,229,122,0.2);border-radius:4px;padding:3px 9px">🏆 2nd Place · National</span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.25)">Sep 2024</span>
+          </div>
+          <h4 style="font-size:15px;color:#fff;font-weight:500;margin-bottom:8px;line-height:1.4">3D Printed Cargo Drone<br>ASME IAM3D 2024</h4>
+          <p style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:14px">Designed and assembled an FPV quadcopter with 3D printed frame, modular architecture and custom electromagnetic payload mechanism. Performed ANSYS structural analysis, thrust calculations and full DFMEA. Secured 2nd place nationally at ASME EFx FISAT 2024.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"><span class="sk">Solidworks</span><span class="sk">Betaflight</span><span class="sk">ANSYS</span><span class="sk">SpeedyBee FC</span><span class="sk">3D Printing</span><span class="sk">DFMEA</span></div>
+          <a href="https://www.linkedin.com/posts/akhilsebastian5527_iam3d-efxcompetition-fpvdrone-activity-7248295469443940352-t7Ep/" target="_blank" style="display:inline-flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;font-size:10px;color:var(--g);letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;border:1px solid rgba(0,229,122,0.25);border-radius:3px;padding:7px 14px;transition:all 0.2s" onmouseover="this.style.background='rgba(0,229,122,0.07)'" onmouseout="this.style.background='transparent'">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            View on LinkedIn
+          </a>
+        </div>
       </div>
 
       <!-- IAM3D 2025 — drone, 4th place, Team Lead -->
