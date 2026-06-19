@@ -250,6 +250,12 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
 .proj-tab.active{background:rgba(0,229,122,0.1);border-color:var(--g);color:var(--g)}
 .proj-card{transition:opacity 0.3s,transform 0.3s}
 .proj-card.hidden{display:none}
+
+@media(max-width:768px){
+  .proj-card[style*="grid-column:span 2"]{grid-column:span 1 !important;}
+  .proj-card[style*="grid-column:span 2"] > div {grid-template-columns:1fr !important;}
+  .proj-card[style*="grid-column:span 2"] > div > div:last-child{border-left:none !important;border-top:1px solid rgba(255,255,255,0.06)!important;min-height:220px!important;}
+}
 </style>
 </head>
 <body>
@@ -1895,6 +1901,118 @@ function filterProjects(cat){
     }
   });
 }
+
+
+/* ── QUAD DRONE GLB LOADER (IAM3D 2024) ── */
+(function(){
+  var canvas = document.getElementById('quad-canvas');
+  if(!canvas) return;
+
+  var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setClearColor(0x111111, 1);
+  renderer.physicallyCorrectLights = true;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.4;
+
+  function resize(){
+    var W=canvas.clientWidth, H=canvas.clientHeight||280;
+    renderer.setSize(W,H,false);
+    camera.aspect = W/H;
+    camera.updateProjectionMatrix();
+  }
+
+  var scene  = new THREE.Scene();
+  scene.background = new THREE.Color(0x111111);
+  var camera = new THREE.PerspectiveCamera(42,1,0.01,100);
+  camera.position.set(0,0.5,4);
+
+  scene.add(new THREE.AmbientLight(0xffffff,1.2));
+  var key=new THREE.DirectionalLight(0xffffff,3.0); key.position.set(4,5,4); scene.add(key);
+  var fill=new THREE.DirectionalLight(0xaaddff,1.2); fill.position.set(-4,2,-3); scene.add(fill);
+  var rim=new THREE.PointLight(0x00e57a,2.0,10); rim.position.set(0,-1,2.5); scene.add(rim);
+
+  var isDragging=false, prevX=0, prevY=0, rotX=0, rotY=0, velX=0, velY=0, autoRot=true, lastInteract=0;
+
+  canvas.addEventListener('mousedown',function(e){isDragging=true;prevX=e.clientX;prevY=e.clientY;autoRot=false;lastInteract=Date.now();velX=0;velY=0;});
+  window.addEventListener('mouseup',function(){isDragging=false;lastInteract=Date.now();});
+  window.addEventListener('mousemove',function(e){
+    if(!isDragging)return;
+    var dx=e.clientX-prevX,dy=e.clientY-prevY;
+    velY=dx*0.008;velX=dy*0.006;
+    rotY+=velY;rotX+=velX;
+    rotX=Math.max(-1,Math.min(1,rotX));
+    prevX=e.clientX;prevY=e.clientY;
+  });
+  canvas.addEventListener('touchstart',function(e){isDragging=true;prevX=e.touches[0].clientX;prevY=e.touches[0].clientY;autoRot=false;lastInteract=Date.now();},{passive:true});
+  window.addEventListener('touchend',function(){isDragging=false;lastInteract=Date.now();});
+  window.addEventListener('touchmove',function(e){
+    if(!isDragging)return;
+    var dx=e.touches[0].clientX-prevX,dy=e.touches[0].clientY-prevY;
+    velY=dx*0.008;velX=dy*0.006;
+    rotX+=velX;rotY+=velY;
+    prevX=e.touches[0].clientX;prevY=e.touches[0].clientY;
+  },{passive:true});
+
+  var model=null, t=0;
+
+  var dracoLoader=new THREE.DRACOLoader();
+  dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
+  var loader=new THREE.GLTFLoader();
+  loader.setDRACOLoader(dracoLoader);
+
+  loader.load('./quad_25.glb',
+    function(gltf){
+      model=gltf.scene;
+      var box=new THREE.Box3().setFromObject(model);
+      var centre=box.getCenter(new THREE.Vector3());
+      var size=box.getSize(new THREE.Vector3());
+      var maxDim=Math.max(size.x,size.y,size.z);
+      model.position.set(-centre.x*(2.2/maxDim),-centre.y*(2.2/maxDim),-centre.z*(2.2/maxDim));
+      model.scale.setScalar(2.2/maxDim);
+      var pivot=new THREE.Group();
+      pivot.add(model);
+      scene.add(pivot);
+      model=pivot;
+      var loading=document.getElementById('quad-loading');
+      if(loading)loading.style.display='none';
+    },
+    function(xhr){
+      if(xhr.total){
+        var pct=Math.round(xhr.loaded/xhr.total*100);
+        var el=document.querySelector('#quad-loading span');
+        if(el)el.textContent='Loading... '+pct+'%';
+      }
+    },
+    function(err){ console.warn('Quad GLB error:',err); var l=document.getElementById('quad-loading'); if(l)l.style.display='none'; }
+  );
+
+  resize();
+  window.addEventListener('resize',resize);
+
+  (function loop(){
+    requestAnimationFrame(loop);
+    t+=0.012;
+    if(model){
+      var now=Date.now();
+      if(isDragging){ model.rotation.y=rotY; model.rotation.x=rotX; }
+      else if(!autoRot && now-lastInteract>3000){
+        rotX+=(0-rotX)*0.04; rotY+=(0-rotY)*0.04;
+        if(Math.abs(rotX)<0.01&&Math.abs(rotY)<0.01){rotX=0;rotY=0;autoRot=true;}
+        model.rotation.x=rotX; model.rotation.y=rotY;
+      } else if(autoRot){
+        rotY+=0.005; model.rotation.y=rotY; model.rotation.x=rotX;
+      } else {
+        velX*=0.92;velY*=0.92;rotX+=velX;rotY+=velY;
+        rotX=Math.max(-1,Math.min(1,rotX));
+        model.rotation.x=rotX; model.rotation.y=rotY;
+      }
+      model.position.y=Math.sin(t*0.6)*0.05;
+      rim.position.x=Math.sin(t*0.5)*2;
+    }
+    renderer.render(scene,camera);
+  })();
+})();
 
 </script>
 
