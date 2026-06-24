@@ -497,15 +497,25 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
         </div>
       </div>
 
-      <!-- SAE Box Wing — drone -->
-      <div class="proj-card rv d3" data-cat="drone" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:24px;transition:border-color 0.2s" onmouseover="this.style.borderColor='rgba(0,229,122,0.25)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
-          <span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:3px 9px">SAE · 2025</span>
-          <span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.25)">Mar 2025</span>
+      <!-- SAE Box Wing — drone with 3D model -->
+      <div class="proj-card rv d3" data-cat="drone" style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;transition:border-color 0.2s" onmouseover="this.style.borderColor='rgba(0,229,122,0.25)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)'">
+        <div style="position:relative;background:#1a1a1a;height:220px;border-bottom:1px solid rgba(255,255,255,0.06)">
+          <canvas id="agni-canvas" style="width:100%;height:100%;display:block"></canvas>
+          <div id="agni-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+            <div style="width:28px;height:28px;border:2px solid rgba(0,229,122,0.2);border-top-color:var(--g);border-radius:50%;animation:spin 0.8s linear infinite"></div>
+            <span style="font-family:'Space Mono',monospace;font-size:9px;color:rgba(0,229,122,0.5);letter-spacing:0.1em;text-transform:uppercase">Loading model...</span>
+          </div>
+          <div style="position:absolute;bottom:8px;left:10px;font-family:'Space Mono',monospace;font-size:8px;color:rgba(0,229,122,0.45);letter-spacing:0.08em;text-transform:uppercase">● Drag to rotate</div>
         </div>
-        <h4 style="font-size:15px;color:#fff;font-weight:500;margin-bottom:8px;line-height:1.4">Box Wing Aircraft<br>Drone Design Challenge</h4>
-        <p style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:16px">Designed, simulated and manufactured a functional box wing aircraft. Full workflow from aerodynamic simulation to physical manufacturing.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="sk">Solidworks</span><span class="sk">XFLR5</span><span class="sk">Ansys CFD</span><span class="sk">3D Printing</span></div>
+        <div style="padding:20px 22px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:3px 9px">SAE · 2025</span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.25)">Mar 2025</span>
+          </div>
+          <h4 style="font-size:15px;color:#fff;font-weight:500;margin-bottom:8px;line-height:1.4">Box Wing Aircraft — AGNI<br>Drone Design Challenge</h4>
+          <p style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:14px">Designed, simulated and manufactured a functional box wing aircraft. Full workflow from aerodynamic simulation to physical manufacturing.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="sk">Solidworks</span><span class="sk">XFLR5</span><span class="sk">Ansys CFD</span><span class="sk">3D Printing</span></div>
+        </div>
       </div>
 
       <!-- LED Cube — hardware -->
@@ -2097,6 +2107,81 @@ function filterProjects(cat){
     renderer.render(scene,camera);
   })();
 })();
+
+
+/* ── AGNI BOX WING GLB LOADER ── */
+window.addEventListener('load', function(){
+  var canvas = document.getElementById('agni-canvas');
+  if(!canvas) return;
+  var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setClearColor(0x1a1a1a,1);
+  renderer.physicallyCorrectLights = true;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 2.2;
+
+  function resize(){ var W=canvas.clientWidth,H=canvas.clientHeight; renderer.setSize(W,H,false); camera.aspect=W/H; camera.updateProjectionMatrix(); }
+
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x1a1a1a);
+  var camera = new THREE.PerspectiveCamera(42,1,0.01,100);
+  camera.position.set(0,1.5,4.0);
+  camera.lookAt(0,0,0);
+
+  scene.add(new THREE.AmbientLight(0xffffff,2.5));
+  var key=new THREE.DirectionalLight(0xffffff,4.5); key.position.set(4,5,4); scene.add(key);
+  var fill=new THREE.DirectionalLight(0xffffff,2.5); fill.position.set(-4,2,-3); scene.add(fill);
+  var top=new THREE.DirectionalLight(0xffffff,2.0); top.position.set(0,8,0); scene.add(top);
+  var front=new THREE.DirectionalLight(0xffffff,2.0); front.position.set(0,0,6); scene.add(front);
+  var rim=new THREE.PointLight(0x00e57a,1.0,10); rim.position.set(0,-1,2.5); scene.add(rim);
+
+  var isDragging=false,prevX=0,prevY=0,rotX=-0.25,rotY=0,velX=0,velY=0,autoRot=true,lastInteract=0,t=0,model=null;
+
+  canvas.addEventListener('mousedown',function(e){isDragging=true;prevX=e.clientX;prevY=e.clientY;autoRot=false;lastInteract=Date.now();velX=0;velY=0;});
+  window.addEventListener('mouseup',function(){isDragging=false;lastInteract=Date.now();});
+  window.addEventListener('mousemove',function(e){if(!isDragging)return;var dx=e.clientX-prevX,dy=e.clientY-prevY;velY=dx*0.008;velX=dy*0.006;rotY+=velY;rotX+=velX;rotX=Math.max(-1,Math.min(1,rotX));prevX=e.clientX;prevY=e.clientY;});
+  canvas.addEventListener('touchstart',function(e){isDragging=true;prevX=e.touches[0].clientX;prevY=e.touches[0].clientY;autoRot=false;lastInteract=Date.now();},{passive:true});
+  window.addEventListener('touchend',function(){isDragging=false;lastInteract=Date.now();});
+  window.addEventListener('touchmove',function(e){if(!isDragging)return;rotY+=(e.touches[0].clientX-prevX)*0.008;rotX+=(e.touches[0].clientY-prevY)*0.006;prevX=e.touches[0].clientX;prevY=e.touches[0].clientY;},{passive:true});
+
+  var dracoLoader=new THREE.DRACOLoader();
+  dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
+  var loader=new THREE.GLTFLoader();
+  loader.setDRACOLoader(dracoLoader);
+
+  loader.load('./agni.glb',
+    function(gltf){
+      model=gltf.scene;
+      var box=new THREE.Box3().setFromObject(model);
+      var centre=box.getCenter(new THREE.Vector3());
+      var size=box.getSize(new THREE.Vector3());
+      var maxDim=Math.max(size.x,size.y,size.z);
+      model.position.set(-centre.x*(2.2/maxDim),-centre.y*(2.2/maxDim),-centre.z*(2.2/maxDim));
+      model.scale.setScalar(2.2/maxDim);
+      var pivot=new THREE.Group(); pivot.add(model); scene.add(pivot); model=pivot;
+      var loading=document.getElementById('agni-loading');
+      if(loading) loading.style.display='none';
+    },
+    function(xhr){ if(xhr.total){var el=document.querySelector('#agni-loading span');if(el)el.textContent='Loading... '+Math.round(xhr.loaded/xhr.total*100)+'%';}},
+    function(err){ console.warn('AGNI GLB error:',err); var l=document.getElementById('agni-loading'); if(l)l.style.display='none'; }
+  );
+
+  resize();
+  window.addEventListener('resize',resize);
+
+  (function loop(){
+    requestAnimationFrame(loop); t+=0.012;
+    if(model){
+      var now=Date.now(),timeSince=now-lastInteract;
+      if(isDragging){ model.rotation.y=rotY; model.rotation.x=rotX; }
+      else if(!autoRot && timeSince>3000){ rotX+=(-0.25-rotX)*0.04; rotY+=(0-rotY)*0.04; if(Math.abs(rotX+0.25)<0.01&&Math.abs(rotY)<0.01){rotX=-0.25;rotY=0;autoRot=true;} model.rotation.x=rotX; model.rotation.y=rotY; }
+      else if(autoRot){ rotY=Math.sin(t*0.4)*0.52; model.rotation.y=rotY; model.rotation.x=rotX; }
+      else { velX*=0.92;velY*=0.92;rotX+=velX;rotY+=velY; model.rotation.x=rotX; model.rotation.y=rotY; }
+      model.position.y=Math.sin(t*0.5)*0.04;
+    }
+    renderer.render(scene,camera);
+  })();
+});
 
 </script>
 
