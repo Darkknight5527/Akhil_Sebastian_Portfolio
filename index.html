@@ -1362,8 +1362,8 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x111111);
 
-  const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 100);
-  camera.position.set(0, 0.3, 3.8);
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 100);
+  camera.position.set(0, 0.8, 5.5);
   camera.lookAt(0, 0, 0);
 
   /* lighting */
@@ -1423,8 +1423,8 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
       const size   = box.getSize(new THREE.Vector3());
       const maxDim = Math.max(size.x, size.y, size.z);
       /* centre geometry exactly */
-      model.position.set(-centre.x * (2.2/maxDim), -centre.y * (2.2/maxDim), -centre.z * (2.2/maxDim));
-      model.scale.setScalar(2.2 / maxDim);
+      model.position.set(-centre.x * (1.6/maxDim), -centre.y * (1.6/maxDim), -centre.z * (1.6/maxDim));
+      model.scale.setScalar(1.6 / maxDim);
       const pivot = new THREE.Group();
       pivot.add(model);
       scene.add(pivot);
