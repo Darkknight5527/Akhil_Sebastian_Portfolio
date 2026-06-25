@@ -1,5 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+<!--
+  ╔══════════════════════════════════════════════════════════════════════╗
+  ║           AKHIL SEBASTIAN — PERSONAL PORTFOLIO WEBSITE              ║
+  ╠══════════════════════════════════════════════════════════════════════╣
+  ║  Author      : Akhil Sebastian                                      ║
+  ║  GitHub      : github.com/Darkknight5527                            ║
+  ║  Live URL    : darkknight5527.github.io/Akhil_Sebastian_Portfolio   ║
+  ║  Last Updated: June 2026                                            ║
+  ╠══════════════════════════════════════════════════════════════════════╣
+  ║  TECH STACK                                                         ║
+  ║  • HTML5 / CSS3 / Vanilla JavaScript                                ║
+  ║  • Three.js r128  — 3D model rendering (GLB/Draco)                  ║
+  ║  • Google Analytics G-CQ0ZYMLB0S                                    ║
+  ║  • Hosted on GitHub Pages                                           ║
+  ╠══════════════════════════════════════════════════════════════════════╣
+  ║  FILE STRUCTURE (all in one file for GitHub Pages simplicity)       ║
+  ║                                                                     ║
+  ║  <head>                                                             ║
+  ║    ├── Meta tags & SEO                                              ║
+  ║    ├── Google Fonts (Bebas Neue, Space Mono, Inter)                 ║
+  ║    ├── Three.js CDN scripts                                         ║
+  ║    └── <style>
+  /* ════════════════════════════════════════════════════════
+     CSS TABLE OF CONTENTS
+     1. CSS Variables & Reset
+     2. Typography & Base
+     3. Layout Utilities
+     4. Navigation
+     5. Hero Section
+     6. Section Headings & Connectors
+     7. Project Cards & Tabs
+     8. Experience Timeline
+     9. Skills
+     10. Contact
+     11. Animations & Keyframes
+     12. Responsive / Mobile
+     13. Component: Skill Tags (.sk)
+  ════════════════════════════════════════════════════════ */ — All CSS (reset, layout, components, animations)    ║
+  ║                                                                     ║
+  ║  <body>                                                             ║
+  ║    ├── #nav        — Fixed navigation bar                           ║
+  ║    ├── #home       — Hero section with PCB canvas background        ║
+  ║    ├── #about      — About me, education, fun facts                 ║
+  ║    ├── #projects   — Tabbed project cards with 3D models            ║
+  ║    ├── #experience — Internships + Leadership (two-column)          ║
+  ║    ├── #skills     — Skill categories + language proficiency        ║
+  ║    ├── #contact    — Contact form + social links                    ║
+  ║    └── #lightbox   — Fullscreen photo viewer (overlay)              ║
+  ║                                                                     ║
+  ║  <script> blocks                                                    ║
+  ║    ├── Neural PCB background animation                              ║
+  ║    ├── Scroll reveal animations                                     ║
+  ║    ├── Navigation (hamburger, active link, scroll offset)           ║
+  ║    ├── Drone GLB loader  (drone.glb  — Hybrid Robot)                ║
+  ║    ├── Quad GLB loader   (quad_25.glb — IAM3D 2024)                 ║
+  ║    ├── AGNI GLB loader   (agni.glb  — SAE Box Wing)                 ║
+  ║    ├── Robot Easter Egg  (15s inactivity → mischievous robot)       ║
+  ║    ├── Project tab filter                                           ║
+  ║    ├── Robot photo slideshow                                        ║
+  ║    └── Lightbox (fullscreen photo viewer with keyboard nav)         ║
+  ║                                                                     ║
+  ║  ASSET FILES (in repo root alongside index.html)                    ║
+  ║    ├── drone.glb     — Hexa robot 3D model   (~1.6MB compressed)   ║
+  ║    ├── quad_25.glb   — IAM3D quadcopter       (~880KB compressed)   ║
+  ║    ├── agni.glb      — SAE box wing aircraft  (~322KB compressed)   ║
+  ║    └── resume.pdf    — Downloadable CV                              ║
+  ╚══════════════════════════════════════════════════════════════════════╝
+-->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +84,22 @@
 <link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzAzMDgwNSIvPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwZTU3YSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KICA8dGV4dCB4PSIxNiIgeT0iMjIiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI3MDAiIAogICAgZmlsbD0iIzAwZTU3YSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9IjAuNSI+QVM8L3RleHQ+Cjwvc3ZnPg==">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+  /* ════════════════════════════════════════════════════════
+     CSS TABLE OF CONTENTS
+     1. CSS Variables & Reset
+     2. Typography & Base
+     3. Layout Utilities
+     4. Navigation
+     5. Hero Section
+     6. Section Headings & Connectors
+     7. Project Cards & Tabs
+     8. Experience Timeline
+     9. Skills
+     10. Contact
+     11. Animations & Keyframes
+     12. Responsive / Mobile
+     13. Component: Skill Tags (.sk)
+  ════════════════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--g:#00e57a;--bg:#030805;--bg2:#07100a;--muted:rgba(255,255,255,0.45);--border:rgba(0,229,122,0.12)}
 html{scroll-behavior:smooth}
@@ -271,6 +355,13 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
 
 <div id="prog"></div>
 
+
+
+<!-- ════════════════════════════════════
+     NAVIGATION BAR
+     Fixed top bar with logo, nav links,
+     and hamburger menu for mobile
+════════════════════════════════════ -->
 <nav id="nav" style="position:relative">
   <div class="nav-logo">AS — Portfolio</div>
   <button id="hamburger" aria-label="Menu" style="display:none">
@@ -286,7 +377,15 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
   </ul>
 </nav>
 
-<!-- ═══ HERO ═══ -->
+<!-- ════════════════════════════════════
+     HERO SECTION
+     Full-viewport landing section.
+     Contains: PCB canvas background,
+     name, tagline, CTA buttons,
+     stats bar, and skill marquees.
+     Easter egg: robot appears after
+     15s of inactivity.
+════════════════════════════════════ -->
 <section id="home" style="position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 40px 80px;overflow:hidden">
   <canvas id="hero-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
   <div class="hero-overlay"></div>
@@ -337,6 +436,13 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
 <div class="trace-connector"><svg viewBox="0 0 1200 80" preserveAspectRatio="none"><polyline points="600,0 600,20 500,20 500,40 700,40 700,60 600,60 600,80" fill="none" stroke="#00e57a" stroke-width="1.5" stroke-opacity="0.4"/><circle cx="600" cy="0" r="3" fill="#00e57a" opacity="0.6"/><circle cx="600" cy="80" r="3" fill="#00e57a" opacity="0.6"/><rect x="492" y="32" width="16" height="16" fill="none" stroke="#00e57a" stroke-width="1" opacity="0.4"/><rect x="692" y="32" width="16" height="16" fill="none" stroke="#00e57a" stroke-width="1" opacity="0.4"/></svg></div>
 
 <!-- ═══ ABOUT ═══ -->
+
+
+<!-- ════════════════════════════════════
+     ABOUT SECTION
+     Profile photo, bio text, education
+     cards, and fun facts grid.
+════════════════════════════════════ -->
 <section class="section" id="about">
   <div class="section-inner">
     <div class="sec-hd rv"><span class="sec-n">01</span><span class="sec-l"></span><span class="sec-t">ABOUT ME</span><span class="sec-l"></span><span class="sec-n">01</span></div>
@@ -401,6 +507,20 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
 </div></div>
 
 <!-- ═══ PROJECTS ═══ -->
+
+
+<!-- ════════════════════════════════════
+     PROJECTS SECTION
+     Tabbed project cards.
+     Tabs: All | Robotics | Drone |
+           Hardware | Web | ATE
+     Featured card: Autonomous Robot
+     with 3D model viewer (drone.glb)
+     and photo slideshow.
+     Other cards: IAM3D 2024 (quad_25.glb),
+     IAM3D 2025 (photo), SAE Box Wing
+     (agni.glb), LED Cube, PrintForge, ATE
+════════════════════════════════════ -->
 <section class="section alt" id="projects">
   <div class="section-inner">
     <div class="sec-hd rv"><span class="sec-n">02</span><span class="sec-l"></span><span class="sec-t">PROJECTS</span><span class="sec-l"></span><span class="sec-n">02</span></div>
@@ -603,6 +723,14 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
 </div></div>
 
 <!-- ═══ EXPERIENCE ═══ -->
+
+
+<!-- ════════════════════════════════════
+     EXPERIENCE SECTION
+     Two-column timeline layout.
+     LEFT  → Internships (3 roles)
+     RIGHT → Leadership & Roles (6 roles)
+════════════════════════════════════ -->
 <section class="section" id="experience">
   <div class="section-inner">
     <div class="sec-hd rv"><span class="sec-n">03</span><span class="sec-l"></span><span class="sec-t">EXPERIENCE</span><span class="sec-l"></span><span class="sec-n">03</span></div>
@@ -752,6 +880,13 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
 <div class="trace-connector"><svg viewBox="0 0 1200 80" preserveAspectRatio="none"><polyline points="600,0 600,15 300,15 300,65 600,65 600,80" fill="none" stroke="#00e57a" stroke-width="1.5" stroke-opacity="0.4"/><circle cx="600" cy="0" r="3" fill="#00e57a" opacity="0.6"/><circle cx="600" cy="80" r="3" fill="#00e57a" opacity="0.6"/></svg></div>
 
 <!-- ═══ SKILLS ═══ -->
+
+
+<!-- ════════════════════════════════════
+     SKILLS SECTION
+     Six skill category cards +
+     language proficiency bars.
+════════════════════════════════════ -->
 <section class="section alt" id="skills">
   <div class="section-inner">
     <div class="sec-hd rv"><span class="sec-n">04</span><span class="sec-l"></span><span class="sec-t">SKILLS</span><span class="sec-l"></span><span class="sec-n">04</span></div>
@@ -903,6 +1038,13 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
 <div class="trace-connector"><svg viewBox="0 0 1200 80" preserveAspectRatio="none"><polyline points="600,0 600,20 750,20 750,60 600,60 600,80" fill="none" stroke="#00e57a" stroke-width="1.5" stroke-opacity="0.4"/><circle cx="600" cy="0" r="3" fill="#00e57a" opacity="0.6"/><circle cx="600" cy="80" r="3" fill="#00e57a" opacity="0.6"/></svg></div>
 
 <!-- ═══ CONTACT ═══ -->
+
+
+<!-- ════════════════════════════════════
+     CONTACT SECTION
+     Contact form (mailto) +
+     Email, LinkedIn, GitHub, Phone cards.
+════════════════════════════════════ -->
 <section class="section" id="contact">
   <div class="section-inner">
 
