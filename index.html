@@ -446,7 +446,7 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
               <div class="rsdot" data-i="6" style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.3);cursor:pointer;transition:opacity 0.2s"></div>
             </div>
             <!-- label -->
-            <div id="rslide-label" style="position:absolute;top:8px;left:10px;font-family:'Space Mono',monospace;font-size:8px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;background:rgba(0,0,0,0.4);padding:3px 8px;border-radius:3px">VX-01 · Standing</div>
+            <div id="rs-caption" style="position:absolute;top:8px;left:10px;font-family:'Space Mono',monospace;font-size:8px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;background:rgba(0,0,0,0.4);padding:3px 8px;border-radius:3px">VX-01 · Standing</div>
           </div>
 
           <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px">
@@ -2238,7 +2238,7 @@ window.addEventListener('load', function(){
     {id:'rslide-6', label:'Leg · Servo Detail'}
   ];
   var current = 0;
-  var label = document.getElementById('rslide-label');
+  var label = document.getElementById('rs-caption');
   var dots = document.querySelectorAll('.rsdot');
 
   function goTo(i){
@@ -2247,7 +2247,7 @@ window.addEventListener('load', function(){
     current = i;
     document.getElementById(slides[current].id).style.opacity='1';
     dots[current].style.background='var(--g)';
-    if(label) label.textContent = slides[current].label;
+    var cap=document.getElementById('rs-caption'); if(cap) cap.textContent = slides[current].label;
   }
 
   dots.forEach(function(dot){
@@ -2345,7 +2345,7 @@ window.addEventListener('load', function(){
 
 
 <!-- ── LIGHTBOX ── -->
-<div id="lightbox" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;flex-direction:column">
+<div id="lightbox" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.98);align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(8px)">
   <!-- close button -->
   <button onclick="closeLightbox()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:rgba(255,255,255,0.7);font-size:28px;cursor:pointer;z-index:1;line-height:1;padding:8px" aria-label="Close">✕</button>
   <!-- counter -->
