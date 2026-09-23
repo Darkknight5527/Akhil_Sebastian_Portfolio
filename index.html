@@ -349,6 +349,21 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
   #iam3d-2024-card > div{grid-template-columns:1fr!important}
   #iam3d-2024-card > div > div:last-child{border-left:none!important;border-top:1px solid rgba(255,255,255,0.06)!important;min-height:220px!important}
 }
+
+/* ─── PAGE ENTRY ANIMATION ─── */
+@keyframes pageIn{from{opacity:0}to{opacity:1}}
+body{animation:pageIn .7s ease both}
+
+/* ─── REDUCED MOTION ─── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv,.rl,.rr{opacity:1!important;transform:none!important}
+  .eyebrow,.hero-name,.hero-sub,.hero-btns{opacity:1!important;transform:none!important}
+}
+
+/* ─── PROJECT CARD HOVER GLOW (enhanced) ─── */
+.proj-card > div{transition:transform 0.3s ease,box-shadow 0.3s ease,border-color 0.3s ease}
+.proj-card > div:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,229,122,0.18);border-color:rgba(0,229,122,0.45)!important}
 </style>
 </head>
 <body>
@@ -362,7 +377,7 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
      Fixed top bar with logo, nav links,
      and hamburger menu for mobile
 ════════════════════════════════════ -->
-<nav id="nav" style="position:relative">
+<nav id="nav">
   <div class="nav-logo">AS — Portfolio</div>
   <button id="hamburger" aria-label="Menu" style="display:none">
     <span></span><span></span><span></span>
@@ -392,7 +407,7 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
   <div class="hero-content">
     <div class="eyebrow" id="ey">EEE Engineer</div>
     <h1 class="hero-name" id="hn">AKHIL<br><span class="gc">SEBASTIAN</span></h1>
-    <p class="hero-sub" id="hs"><b>ATE</b> &nbsp;·&nbsp; <b>Embedded Systems</b> &nbsp;·&nbsp; <b>Robotics</b></p>
+    <p class="hero-sub" id="hs"><b>Robotics</b> &nbsp;·&nbsp; <b>Embedded Systems</b> &nbsp;·&nbsp; <b>ATE</b></p>
     <div class="hero-btns" id="hb">
       <a href="#projects" class="btn btn-p">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
@@ -417,11 +432,11 @@ nav.filled{background:rgba(3,8,5,0.98);backdrop-filter:blur(20px);-webkit-backdr
 
 <!-- STATS -->
 <div class="stats-bar">
-  <div class="stat rv d1"><span class="stat-n">8.13</span><span class="stat-l">CGPA / 10</span></div>
-  <div class="stat rv d2"><span class="stat-n">5+</span><span class="stat-l">Projects Built</span></div>
+  <div class="stat rv d1"><span class="stat-n" data-n="8.13" data-d="2">8.13</span><span class="stat-l">CGPA / 10</span></div>
+  <div class="stat rv d2"><span class="stat-n" data-n="5" data-suffix="+">5+</span><span class="stat-l">Projects Built</span></div>
   <div class="stat rv d3"><span class="stat-n">2ND</span><span class="stat-l">IAM3D National</span></div>
-  <div class="stat rv d4"><span class="stat-n">3×</span><span class="stat-l">Internships</span></div>
-  <div class="stat rv" style="transition-delay:0.5s"><span class="stat-n">180</span><span class="stat-l">Days · ATE</span></div>
+  <div class="stat rv d4"><span class="stat-n" data-n="3" data-suffix="×">3×</span><span class="stat-l">Internships</span></div>
+  <div class="stat rv" style="transition-delay:0.5s"><span class="stat-n" data-n="180">180</span><span class="stat-l">Days · ATE</span></div>
 </div>
 
 <!-- MARQUEE 1 -->
@@ -1731,6 +1746,44 @@ window.addEventListener('load',()=>{
 document.querySelectorAll('.rv,.rl,.rr').forEach(el=>{
   new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on');});},{threshold:0.12}).observe(el);
 });
+
+/* ── COUNTING STATS ANIMATION ── */
+(function(){
+  function countUp(el){
+    var n=+el.dataset.n, d=+el.dataset.d||0, suf=el.dataset.suffix||'';
+    var start=performance.now();
+    (function frame(now){
+      var p=Math.min((now-start)/1400,1);
+      var eased=1-Math.pow(1-p,3); // ease-out cubic
+      el.textContent=(n*eased).toFixed(d)+suf;
+      if(p<1)requestAnimationFrame(frame);
+    })(start);
+  }
+  // Trigger when stat enters view
+  document.querySelectorAll('.stat-n[data-n]').forEach(function(el){
+    var triggered=false;
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting&&!triggered){triggered=true;setTimeout(function(){countUp(el);},300);}
+      });
+    },{threshold:0.5}).observe(el.closest('.stat')||el);
+  });
+})();
+
+/* ── MAGNETIC BUTTON HOVER ── */
+(function(){
+  document.querySelectorAll('.btn-p,.btn-o').forEach(function(btn){
+    btn.addEventListener('mousemove',function(e){
+      var r=btn.getBoundingClientRect();
+      var x=(e.clientX-r.left-r.width/2)*0.28;
+      var y=(e.clientY-r.top-r.height/2)*0.28;
+      btn.style.transform='translateY(-2px) translate('+x+'px,'+y+'px)';
+    });
+    btn.addEventListener('mouseleave',function(){
+      btn.style.transform='';
+    });
+  });
+})();
 
 /* ── HAMBURGER MENU ── */
 (function(){
