@@ -63,7 +63,7 @@ export type Project = {
   description: string;
   tags: string[];
   images?: string[];
-  model?: { src: string; sizeMB: number };
+  model?: string;
   icon: string;
   links?: { label: string; href: string }[];
   featured?: boolean;
@@ -82,7 +82,7 @@ export const PROJECTS: Project[] = [
       "Designed and developed a fully autonomous hybrid robot capable of navigating multiple terrains using sensor fusion, computer vision, and adaptive locomotion. Integrates a Pixhawk 6C flight controller with dual GPS for precision positioning, a full ROS2 navigation stack with LiDAR-ultrasonic fusion, and real-time path planning on Raspberry Pi 5. Mission Planner used for autonomous waypoint programming and failsafe configuration.",
     tags: ["ROS2", "Raspberry Pi 5", "Pixhawk 6C", "Mission Planner", "Dual GPS", "OpenCV", "Gazebo", "LiDAR", "Python"],
     images: [0, 1, 2, 3, 4, 5, 6].map((i) => `/images/robot-${i}.jpg`),
-    model: { src: "/models/drone.glb", sizeMB: 36 },
+    model: "/models/drone.glb",
     icon: "🤖",
     links: [
       { label: "GitHub", href: "https://github.com/Darkknight5527/VX-01" },
@@ -99,7 +99,7 @@ export const PROJECTS: Project[] = [
     description:
       "Designed and assembled an FPV quadcopter with a 3D printed frame, modular architecture and a custom electromagnetic payload mechanism. Performed ANSYS structural analysis, thrust calculations and a full DFMEA. Secured 2nd place nationally at ASME EFx FISAT 2024.",
     tags: ["Solidworks", "Betaflight", "ANSYS", "SpeedyBee FC", "3D Printing", "DFMEA"],
-    model: { src: "/models/quad_25.glb", sizeMB: 22 },
+    model: "/models/quad_25.glb",
     icon: "🚁",
     links: [
       { label: "LinkedIn", href: "https://www.linkedin.com/posts/akhilsebastian5527_iam3d-efxcompetition-fpvdrone-activity-7248295469443940352-t7Ep/" },
@@ -131,7 +131,7 @@ export const PROJECTS: Project[] = [
     description:
       "Designed, simulated and manufactured a functional box wing aircraft. Full workflow from aerodynamic simulation to physical manufacturing.",
     tags: ["Solidworks", "XFLR5", "Ansys CFD", "3D Printing"],
-    model: { src: "/models/agni.glb", sizeMB: 0.3 },
+    model: "/models/agni.glb",
     icon: "✈️",
   },
   {
@@ -188,12 +188,13 @@ export const CATEGORIES: ("All" | ProjectCategory)[] = [
   "All", "Robotics & Autonomy", "Drone & Aerial", "Hardware & PCB", "Web & Software", "ATE & Testing",
 ];
 
-export type Role = { title: string; org: string; when: string; description: string; tags?: string[] };
+export type Role = { title: string; org: string; when: string; description: string; tags?: string[]; badge?: string };
 
 export const INTERNSHIPS: Role[] = [
   {
     title: "ATE Test Engineer",
     org: "Anora Instrumentation · India",
+    badge: "AN",
     when: "Feb 2026 – present",
     description:
       "ATE development and debug on the Advantest V93K platform. Parametric testing, functional test program development, and pattern-based validation using STIL, VCD and WGL formats. Circuit-level debugging and protocol analysis for industrial embedded products.",
@@ -202,6 +203,7 @@ export const INTERNSHIPS: Role[] = [
   {
     title: "Aircraft Design & Testing Trainee",
     org: "Feynman Aerospace · Germany",
+    badge: "FA",
     when: "Jan 2025 · 30 days",
     description:
       "Design and performance evaluation of aircraft systems. Hands-on testing, component analysis, and exposure to industry-standard protocols for aircraft validation.",
@@ -210,6 +212,7 @@ export const INTERNSHIPS: Role[] = [
   {
     title: "Robotics Project Trainee",
     org: "OpenDroids · USA",
+    badge: "OD",
     when: "Jan 2024 · 30 days",
     description:
       "Hardware integration and embedded systems programming for robotics projects. Team-based troubleshooting and design reviews using ROS2, Gazebo and embedded platforms.",
@@ -218,12 +221,12 @@ export const INTERNSHIPS: Role[] = [
 ];
 
 export const LEADERSHIP: Role[] = [
-  { title: "Chair", org: "IEEE PES SBC MACE", when: "Mar 2024 – Feb 2025", description: "Led and coordinated technical events and workshops for the Power & Energy Society student branch chapter." },
-  { title: "Content Lead", org: "IEEE PES Kerala Chapter", when: "Apr 2024 – Mar 2025", description: "Created and curated technical content for the chapter." },
-  { title: "Team Lead", org: "ASME IAM3D 2025", when: "Mar 2025", description: "Directed drone design, assembly and software setup. Secured 4th place nationally." },
-  { title: "Co-Lead", org: "SAE Drone Design Challenge", when: "Oct 2024", description: "Co-led execution of the box wing aircraft project." },
-  { title: "Project Lead", org: "Safety Devices for Women", when: "Aug 2024", description: "Managed the design and development of personal safety devices." },
-  { title: "Participant", org: "MathWorks MiniDrone Competition", when: "Jul 2025", description: "Built Simulink models and control systems for drone navigation using image processing." },
+  { title: "Chair", org: "IEEE PES SBC MACE", badge: "PES", when: "Mar 2024 – Feb 2025", description: "Led and coordinated technical events and workshops for the Power & Energy Society student branch chapter." },
+  { title: "Content Lead", org: "IEEE PES Kerala Chapter", badge: "PES", when: "Apr 2024 – Mar 2025", description: "Created and curated technical content for the chapter." },
+  { title: "Team Lead", org: "ASME IAM3D 2025", badge: "IAM", when: "Mar 2025", description: "Directed drone design, assembly and software setup. Secured 4th place nationally." },
+  { title: "Co-Lead", org: "SAE Drone Design Challenge", badge: "SAE", when: "Oct 2024", description: "Co-led execution of the box wing aircraft project." },
+  { title: "Project Lead", org: "Safety Devices for Women", badge: "SD", when: "Aug 2024", description: "Managed the design and development of personal safety devices." },
+  { title: "Participant", org: "MathWorks MiniDrone Competition", badge: "MW", when: "Jul 2025", description: "Built Simulink models and control systems for drone navigation using image processing." },
 ];
 
 export const SKILLS = [
@@ -236,8 +239,8 @@ export const SKILLS = [
 ];
 
 export const LANGUAGES = [
-  { name: "Malayalam", level: "Native", pct: 100 },
-  { name: "English", level: "Fluent", pct: 90 },
-  { name: "Hindi", level: "Fluent", pct: 80 },
-  { name: "Japanese", level: "Basic", pct: 25 },
+  { name: "Malayalam", glyph: "മ", level: "Native", bars: 5 },
+  { name: "English", glyph: "En", level: "Fluent", bars: 5 },
+  { name: "Hindi", glyph: "हि", level: "Fluent", bars: 4 },
+  { name: "Japanese", glyph: "日", level: "Learning", bars: 1 },
 ];

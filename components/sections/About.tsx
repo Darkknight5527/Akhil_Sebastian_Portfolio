@@ -9,12 +9,12 @@ export function About() {
   return (
     <section id="about" className="mx-auto max-w-6xl px-5 py-28">
       <SectionHeading index="01" title="About Me" />
-      <div className="grid items-start gap-12 lg:grid-cols-[380px_1fr]">
+      <div className="grid items-start gap-12 lg:grid-cols-[300px_1fr]">
         <CardContainer>
-          <CardBody className="group/card relative h-auto w-full max-w-sm rounded-2xl border border-line bg-bg2 p-5">
+          <CardBody className="group/card relative h-auto w-full max-w-[300px] rounded-2xl border border-line bg-bg2 p-5">
             <CardItem translateZ={60} className="w-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={asset("/images/profile.jpg")} alt="Akhil Sebastian" className="aspect-[4/5] w-full rounded-xl object-cover" />
+              <img src={asset("/images/profile.jpg")} alt="Akhil Sebastian" className="aspect-square w-full rounded-xl object-cover" />
             </CardItem>
             <CardItem translateZ={40} className="mt-4 flex items-center gap-2 font-mono text-[11px] tracking-wider text-g uppercase">
               <span className="relative flex h-2 w-2"><span className="absolute h-full w-full animate-ping rounded-full bg-g opacity-60" /><span className="h-2 w-2 rounded-full bg-g" /></span>

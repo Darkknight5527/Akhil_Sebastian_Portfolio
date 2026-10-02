@@ -20,8 +20,9 @@ export const CardContainer = ({
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
     const { left, top, width, height } = containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - left - width / 2) / 40;
-    const y = (e.clientY - top - height / 2) / 40;
+    // Normalised tilt: up to ±12° regardless of card size.
+    const x = ((e.clientX - left) / width - 0.5) * 24;
+    const y = ((e.clientY - top) / height - 0.5) * 24;
     containerRef.current.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
   };
   const handleMouseLeave = () => {

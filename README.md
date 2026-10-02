@@ -9,8 +9,10 @@ Personal portfolio for Akhil Sebastian — EEE engineer working in semiconductor
 - **Next.js 15** (App Router) exported as a fully static site (`output: "export"`)
 - **Tailwind CSS v4**
 - **Motion** (Framer Motion) for animation
-- **Aceternity UI** components: Text Hover Effect, 3D Card, Expandable Card, Tracing Beam, Moving Border
-- **@google/model-viewer** for the interactive 3D models (loaded only when a visitor asks for them)
+- **Aceternity UI** components: Text Hover Effect, 3D Card, Expandable Card, MacBook Scroll, Tracing Beam, Moving Border
+- Animated PCB-trace background (canvas) in the hero
+- **@google/model-viewer** for the interactive 3D models (Draco-compressed, decoder self-hosted in `public/draco`)
+- Fonts self-hosted via Fontsource
 
 ## Editing content
 
