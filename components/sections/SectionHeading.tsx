@@ -1,33 +1,24 @@
 "use client";
 import { motion } from "motion/react";
+import { EASE } from "@/lib/utils";
 
-export function SectionHeading({ index, title, kicker }: { index: string; title: string; kicker?: string }) {
+export function Kicker({ children }: { children: React.ReactNode }) {
+  return <p className="mb-4 text-[15px] font-medium text-g">{children}</p>;
+}
+
+/** Section opener: small green kicker + a big, tight headline. */
+export function SectionHeading({ kicker, title, sub }: { kicker: string; title: React.ReactNode; sub?: React.ReactNode }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.8, ease: EASE }}
       className="mb-12"
     >
-      <p className="font-mono text-xs tracking-[0.3em] text-g">{index} //</p>
-      <h2 className="font-bebas mt-2 text-5xl text-white sm:text-6xl">{title}</h2>
-      {kicker && <p className="mt-3 max-w-xl text-sm text-muted">{kicker}</p>}
+      <Kicker>{kicker}</Kicker>
+      <h2 className="max-w-[22ch] text-[clamp(32px,4.2vw,58px)] leading-[1.05] font-semibold tracking-[-0.03em]">{title}</h2>
+      {sub && <p className="mt-4 max-w-[52ch] text-[17px] leading-relaxed text-white/60">{sub}</p>}
     </motion.div>
-  );
-}
-
-export function Marquee({ items }: { items: string[] }) {
-  const row = [...items, ...items];
-  return (
-    <div className="relative overflow-hidden border-y border-line py-3 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
-      <div className="animate-marquee flex w-max gap-8 whitespace-nowrap font-mono text-xs tracking-[0.2em] text-white/40 uppercase">
-        {row.map((t, i) => (
-          <span key={i} className="flex items-center gap-8">
-            {t}<span className="text-g">/</span>
-          </span>
-        ))}
-      </div>
-    </div>
   );
 }

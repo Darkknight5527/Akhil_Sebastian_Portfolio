@@ -75,12 +75,12 @@ export function ModelViewer({ src, alt, phi = 72 }: { src: string; alt: string; 
         />
       )}
       {!loaded && (
-        <div className="grid-bg pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-xs tracking-widest text-g uppercase">
+        <div className="grid-bg pointer-events-none absolute inset-0 flex items-center justify-center text-[14px] text-g">
           Loading model…
         </div>
       )}
       {loaded && (
-        <span className="pointer-events-none absolute bottom-3 left-3 font-mono text-[10px] tracking-widest text-g/80 uppercase">● Drag to rotate</span>
+        <span className="pointer-events-none absolute bottom-3 left-3 text-[13px] text-white/60">Drag to rotate</span>
       )}
     </div>
   );

@@ -7,12 +7,21 @@ Personal portfolio for Akhil Sebastian — EEE engineer working in semiconductor
 ## Stack
 
 - **Next.js 15** (App Router) exported as a fully static site (`output: "export"`)
-- **Tailwind CSS v4**
-- **Motion** (Framer Motion) for animation
-- **Aceternity UI** components: Text Hover Effect, 3D Card, Expandable Card, MacBook Scroll, Tracing Beam, Moving Border
-- Animated PCB-trace background (canvas) in the hero
-- **@google/model-viewer** for the interactive 3D models (Draco-compressed, decoder self-hosted in `public/draco`)
-- Fonts self-hosted via Fontsource
+- **Tailwind CSS v4**, **Motion** for animation, **Lenis** for smooth scrolling
+- **Outfit** variable font (self-hosted via Fontsource)
+- **@google/model-viewer** for the 3D models (Draco-compressed, decoder self-hosted in `public/draco`)
+
+## What's on the page
+
+| Section | Effect |
+|---|---|
+| Hero | Interactive PCB field: the cursor pulls signals towards it, a click fires a shockwave. Weight-shifting name that glows near the cursor, rotating "I ___" line, parallax on scroll |
+| About | Paragraph that lights up word by word as you scroll, then education, languages and background |
+| Projects | Sideways gallery driven by vertical scroll; image-only 3D tilt, cursor spotlight, looping art for projects without photos; detail panel with photos / 3D model |
+| Experience | Two-column timeline with a scroll-following tracing beam |
+| Skills | Silicon-die layout: probe sweep powers each block on, pulses run along the routing; hover/tap a block to see its skills |
+| Toolkit | Two-row marquee whose speed follows scroll velocity |
+| Everywhere | Chapter rail (right edge), progress bar, `prefers-reduced-motion` respected |
 
 ## Editing content
 

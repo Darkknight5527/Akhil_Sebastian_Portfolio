@@ -1,25 +1,26 @@
+import { PageShell } from "@/components/sections/PageShell";
 import { Navbar } from "@/components/sections/Navbar";
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
-import { Showcase } from "@/components/sections/Showcase";
 import { Projects } from "@/components/sections/Projects";
 import { Experience } from "@/components/sections/Experience";
 import { Skills } from "@/components/sections/Skills";
+import { VelocityMarquee } from "@/components/sections/VelocityMarquee";
 import { Contact } from "@/components/sections/Contact";
 
 export default function Home() {
   return (
-    <>
+    <PageShell>
       <Navbar />
       <main>
         <Hero />
         <About />
-        <Showcase />
         <Projects />
         <Experience />
         <Skills />
+        <VelocityMarquee />
         <Contact />
       </main>
-    </>
+    </PageShell>
   );
 }
