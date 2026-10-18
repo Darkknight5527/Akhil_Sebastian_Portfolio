@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import "./legacy.css";
+import "./base-overrides.css";
 
 export const metadata: Metadata = {
   title: "Akhil Sebastian — ATE Test Engineer | Semiconductor Testing | Embedded Systems",

@@ -1,0 +1,10 @@
+/*
+ * Changes made on top of the original styles (legacy.css stays untouched).
+ * Each block notes what it changes and when it was agreed.
+ */
+
+/* Top bar: name on the left, links on the right, in one row (19 Oct 2026) */
+nav { flex-direction: row; justify-content: space-between; align-items: center; padding: 16px 40px; }
+nav.filled { padding: 10px 40px; }
+@media (max-width: 800px) { nav, nav.filled { padding: 12px 20px; } }
+@media (max-width: 768px) { nav { justify-content: flex-start; } }
