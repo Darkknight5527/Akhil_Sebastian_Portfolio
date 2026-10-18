@@ -1,4 +1,11 @@
-name: Deploy static site to GitHub Pages
+name: Deploy site (old HTML + new Next.js preview)
+
+# Publishes:
+#   /                 -> the HTML site on main (what visitors see)
+#   /next/            -> the Next.js version from the `nextjs-redesign` branch
+#   /compare.html     -> both side by side
+# Runs on every push to main. After pushing to nextjs-redesign, re-run it
+# from the Actions tab ("Run workflow") or push anything to main.
 
 on:
   push:
@@ -21,9 +28,36 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      # Publish the repo as-is (index.html + models + resume), minus git/CI files.
-      - run: mkdir _site && rsync -a --exclude .git --exclude .github ./ _site/
+      - name: Check out the live HTML site (main)
+        uses: actions/checkout@v4
+        with:
+          path: site-src
+
+      - name: Check out the Next.js version
+        uses: actions/checkout@v4
+        with:
+          ref: nextjs-redesign
+          path: next-src
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: next-src/package-lock.json
+
+      - name: Build the Next.js version into /next/
+        working-directory: next-src
+        env:
+          NEXT_BASE_PATH: /Akhil_Sebastian_Portfolio/next
+        run: npm ci && npm run build
+
+      - name: Assemble the site
+        run: |
+          mkdir _site
+          rsync -a --exclude .git --exclude .github site-src/ _site/
+          mkdir _site/next
+          cp -r next-src/out/. _site/next/
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site
