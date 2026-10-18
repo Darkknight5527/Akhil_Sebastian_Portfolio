@@ -8,3 +8,22 @@ nav { flex-direction: row; justify-content: space-between; align-items: center; 
 nav.filled { padding: 10px 40px; }
 @media (max-width: 800px) { nav, nav.filled { padding: 12px 20px; } }
 @media (max-width: 768px) { nav { justify-content: flex-start; } }
+
+/* Top bar: same size as the effects model's bar (19 Oct 2026).
+   Space Mono capitals look larger per pixel than the effects font, so sizes are
+   matched by how big the letters look (bar ~64px tall, name ~24px tall). */
+nav { padding: 20px 40px 19px; }
+nav.filled { padding: 12px 40px; }
+.nav-logo { font-size: 22px; letter-spacing: 0.14em; }
+.nav-links { gap: 30px; }
+.nav-links a { font-size: 15px; letter-spacing: 0.1em; }
+@media (max-width: 1050px) {
+  .nav-logo { font-size: 18px; }
+  .nav-links { gap: 20px; }
+  .nav-links a { font-size: 13px; }
+}
+@media (max-width: 800px) { nav, nav.filled { padding: 14px 20px; } }
+@media (max-width: 768px) {
+  .nav-logo { font-size: 16px; }
+  .nav-links a { font-size: 18px; } /* full-screen phone menu */
+}
