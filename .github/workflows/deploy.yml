@@ -1,10 +1,11 @@
-name: Deploy site (old HTML + new Next.js preview)
+name: Deploy site (live HTML + base and effects previews)
 
 # Publishes:
 #   /                 -> the HTML site on main (what visitors see)
-#   /next/            -> the Next.js version from the `nextjs-redesign` branch
-#   /compare.html     -> both side by side
-# Runs on every push to main. After pushing to nextjs-redesign, re-run it
+#   /next/            -> BASE model: Next.js copy of the live site (`nextjs-redesign` branch)
+#   /effects/         -> EFFECTS model: the version with all the effects (`effects` branch)
+#   /compare.html     -> base and effects side by side
+# Runs on every push to main. After pushing to either preview branch, re-run it
 # from the Actions tab ("Run workflow") or push anything to main.
 
 on:
@@ -33,30 +34,45 @@ jobs:
         with:
           path: site-src
 
-      - name: Check out the Next.js version
+      - name: Check out the base model
         uses: actions/checkout@v4
         with:
           ref: nextjs-redesign
           path: next-src
 
+      - name: Check out the effects model
+        uses: actions/checkout@v4
+        with:
+          ref: effects
+          path: effects-src
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: next-src/package-lock.json
+          cache-dependency-path: |
+            next-src/package-lock.json
+            effects-src/package-lock.json
 
-      - name: Build the Next.js version into /next/
+      - name: Build the base model into /next/
         working-directory: next-src
         env:
           NEXT_BASE_PATH: /Akhil_Sebastian_Portfolio/next
+        run: npm ci && npm run build
+
+      - name: Build the effects model into /effects/
+        working-directory: effects-src
+        env:
+          NEXT_BASE_PATH: /Akhil_Sebastian_Portfolio/effects
         run: npm ci && npm run build
 
       - name: Assemble the site
         run: |
           mkdir _site
           rsync -a --exclude .git --exclude .github site-src/ _site/
-          mkdir _site/next
+          mkdir _site/next _site/effects
           cp -r next-src/out/. _site/next/
+          cp -r effects-src/out/. _site/effects/
 
       - uses: actions/upload-pages-artifact@v3
         with:

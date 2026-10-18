@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Compare versions</title>
+<title>Base vs effects</title>
 <style>
   :root { --bg: #040705; --panel: #0a110d; --line: rgba(255,255,255,.1); --g: #00e57a; --txt: #fff; --mut: rgba(255,255,255,.55); }
   * { box-sizing: border-box; }
@@ -32,29 +32,30 @@
 </head>
 <body>
 <header>
-  <h1>Old vs new</h1>
+  <h1>Base vs effects</h1>
   <div class="group" role="group" aria-label="Show">
     <button data-show="both" aria-pressed="true">Side by side</button>
-    <button data-show="old" aria-pressed="false">Old only</button>
-    <button data-show="new" aria-pressed="false">New only</button>
+    <button data-show="old" aria-pressed="false">Base only</button>
+    <button data-show="new" aria-pressed="false">Effects only</button>
   </div>
   <div class="group" role="group" aria-label="Screen size">
     <button data-size="desktop" aria-pressed="true">Desktop</button>
     <button data-size="phone" aria-pressed="false">Phone</button>
   </div>
   <div class="links">
-    <a href="./" target="_blank" rel="noopener">Open old ↗</a>
-    <a href="./next/" target="_blank" rel="noopener">Open new ↗</a>
+    <a href="./next/" target="_blank" rel="noopener">Open base ↗</a>
+    <a href="./effects/" target="_blank" rel="noopener">Open effects ↗</a>
+    <a href="./" target="_blank" rel="noopener">Live site ↗</a>
   </div>
 </header>
 <main id="main">
   <section class="pane" id="pane-old">
-    <div class="label"><b>Old · HTML (live site)</b><span id="info-old"></span></div>
-    <div class="stage"><iframe id="f-old" src="./" title="Old version"></iframe></div>
+    <div class="label"><b>Base model</b><span id="info-old"></span></div>
+    <div class="stage"><iframe id="f-old" src="./next/" title="Base model"></iframe></div>
   </section>
   <section class="pane" id="pane-new">
-    <div class="label"><b>New · Next.js (preview)</b><span id="info-new"></span></div>
-    <div class="stage"><iframe id="f-new" src="./next/" title="New version"></iframe></div>
+    <div class="label"><b>Effects model</b><span id="info-new"></span></div>
+    <div class="stage"><iframe id="f-new" src="./effects/" title="Effects model"></iframe></div>
   </section>
 </main>
 <script>
