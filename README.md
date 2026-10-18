@@ -1,50 +1,22 @@
-# Akhil Sebastian — Portfolio
+# Akhil Sebastian — Portfolio (Next.js version, work in progress)
 
-Live: **https://darkknight5527.github.io/Akhil_Sebastian_Portfolio/**
+This branch is a **Next.js copy of the live HTML site**, used as the base for
+adding new effects one at a time. The live site is the plain `index.html` on `main`.
 
-Personal portfolio for Akhil Sebastian — EEE engineer working in semiconductor ATE (Advantest V93000), with a background in robotics, embedded systems and drones.
+- Preview: https://darkknight5527.github.io/Akhil_Sebastian_Portfolio/next/
+- Side-by-side with the live site: https://darkknight5527.github.io/Akhil_Sebastian_Portfolio/compare.html
 
-## Stack
+## How it's built
 
-- **Next.js 15** (App Router) exported as a fully static site (`output: "export"`)
-- **Tailwind CSS v4**, **Motion** for animation, **Lenis** for smooth scrolling
-- **Outfit** variable font (self-hosted via Fontsource)
-- **@google/model-viewer** for the 3D models (Draco-compressed, decoder self-hosted in `public/draco`)
-
-## What's on the page
-
-| Section | Effect |
+| Piece | What it is |
 |---|---|
-| Hero | Interactive PCB field: the cursor pulls signals towards it, a click fires a shockwave. Weight-shifting name that glows near the cursor, rotating "I ___" line, parallax on scroll |
-| About | Paragraph that lights up word by word as you scroll, then education, languages and background |
-| Projects | Sideways gallery driven by vertical scroll; image-only 3D tilt, cursor spotlight, looping art for projects without photos; detail panel with photos / 3D model |
-| Experience | Two-column timeline with a scroll-following tracing beam |
-| Skills | Silicon-die layout: probe sweep powers each block on, pulses run along the routing; hover/tap a block to see its skills |
-| Toolkit | Two-row marquee whose speed follows scroll velocity |
-| Everywhere | Chapter rail (right edge), progress bar, `prefers-reduced-motion` respected |
+| `components/legacy/*.ts` | The original page markup, one file per section (nav, hero, about, projects, experience, skills, contact, overlays) |
+| `app/legacy.css` | The original `<style>` block, unchanged |
+| `public/legacy/*.js` | The original scripts, unchanged, loaded in the original order by `components/LegacyScripts.tsx` |
+| `public/images`, `public/*.glb`, `public/resume.pdf` | Photos (previously embedded as base64), 3D models and CV |
 
-## Editing content
+To upgrade a section, replace its `<Part>` in `app/page.tsx` with a React component;
+the rest of the page stays exactly as it was.
 
-All text, links, projects, roles and skills live in [`lib/data.ts`](lib/data.ts). Change it there; the layout picks it up.
-
-Static files live in `public/`:
-
-```
-public/
-├── images/       profile photo, robot slideshow, IAM3D 2025 photo
-├── models/       drone.glb, quad_25.glb, agni.glb
-└── resume.pdf
-```
-
-## Run locally
-
-```bash
-npm install
-npm run dev        # http://localhost:3000/Akhil_Sebastian_Portfolio
-npm run build      # static output in ./out
-```
-
-## Deploy
-
-Pushing to `main` runs `.github/workflows/deploy.yml`, which builds the site and publishes `./out` to GitHub Pages.
-One-time setting: **Repo → Settings → Pages → Source: GitHub Actions**.
+The deploy workflow on `main` builds this branch into `/next/`. After pushing here,
+re-run "Deploy site" from the Actions tab (or push to `main`).
