@@ -345,3 +345,29 @@ img.pj-cover { display: block; }
   .pj-featured { align-items: stretch; } /* stacked on phones: full-width photo */
   .pj-featured > .pj-media { aspect-ratio: 4 / 3; }
 }
+
+/* ── 19 Oct 2026: photos at the bottom right of the robot card, and a proper
+   close button in the card's top-right corner ── */
+.pj-featured.open { grid-template-areas: "media body" "extra extra"; }
+.pj-featured > .pj-media { align-self: start; }
+.pj-thumbs-wrap { margin-top: 6px; }
+.pj-thumbs-wrap .pj-extra-t { margin: 16px 0 8px; }
+.pj-thumbs-wrap .pj-thumbs { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.pj-close { display: none; position: absolute; top: 14px; right: 14px; z-index: 5; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.14); background: rgba(10,15,12,.85); color: rgba(255,255,255,.8); font-size: 15px; line-height: 1;
+  cursor: pointer; display: none; align-items: center; justify-content: center; transition: background .2s, color .2s, border-color .2s; }
+.pj-close:hover { background: var(--c); color: #030805; border-color: var(--c); }
+.pj-card.open .pj-close { display: flex; }
+.pj-card.open .pj-foot { display: none; }
+.pj-card.open .pj-body { padding-right: 52px; }
+.pj-extra-col > .pj-paper { flex: 1; }
+.pj-extra-col > .pj-model-box { min-height: 230px; }
+.pj-featured.open .pj-extra { align-items: stretch; }
+@media (max-width: 760px) {
+  .pj-card.open .pj-body { padding-right: 6px; }
+  .pj-card.open .pj-close { top: 22px; right: 22px; }   /* sits on the photo's corner */
+}
+@media (min-width: 761px) {
+  /* open robot card: the photo panel runs the full height of the text beside it */
+  .pj-featured.open > .pj-media { align-self: stretch; aspect-ratio: auto; min-height: 380px; }
+}

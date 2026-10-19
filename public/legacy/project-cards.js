@@ -52,7 +52,7 @@
         }
         window.openLightbox(idx); return;
       }
-      if (card.classList.contains("open") && !t.closest(".pj-explore")) return; // reading/selecting text shouldn't close it
+      if (card.classList.contains("open") && !t.closest(".pj-explore, .pj-close")) return; // reading/selecting text shouldn't close it
       toggle(card);
     });
     card.addEventListener("keydown", function (e) {
