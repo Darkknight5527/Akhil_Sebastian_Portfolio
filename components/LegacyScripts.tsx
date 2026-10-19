@@ -8,6 +8,7 @@ const SCRIPTS = [
   `${BASE}/legacy/contact.js`,
   `${BASE}/legacy/hero-field.js`, // home-page background (effects-model version)
   `${BASE}/legacy/name-effect.js`, // name effect (effects-model version)
+  `${BASE}/legacy/scroll-beam.js`, // tracing-beam scroll indicator
   "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
   "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js",
   "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js",

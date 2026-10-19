@@ -73,3 +73,25 @@ nav.filled { padding: 12px 40px; }
 @media (prefers-reduced-motion: reduce) {
   .hero-btns .btn:nth-child(1)::before { animation: none; }
 }
+
+/* Scroll beam replaces the page scrollbar on laptops/desktops (19 Oct 2026).
+   See public/legacy/scroll-beam.js. Phones keep their normal scroll indicator. */
+#scroll-beam { display: none; }
+@media (min-width: 769px) {
+  html { scrollbar-width: none; }
+  html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+  #scroll-beam {
+    display: block; position: fixed; z-index: 990; right: 6px; top: 92px; bottom: 22px; width: 20px;
+    cursor: pointer; touch-action: none;
+  }
+  #scroll-beam svg { position: absolute; left: 0; overflow: visible; }
+  .scroll-beam-dot {
+    position: absolute; top: 0; left: 3px; width: 14px; height: 14px; border-radius: 50%;
+    border: 1px solid rgba(0, 229, 122, 0.35); background: #030805;
+    display: flex; align-items: center; justify-content: center;
+    transition: box-shadow 0.4s;
+  }
+  .scroll-beam-dot span { width: 6px; height: 6px; border-radius: 50%; background: #1d2b22; transition: background 0.4s; }
+  #scroll-beam.is-on .scroll-beam-dot { box-shadow: 0 0 12px rgba(0, 229, 122, 0.45); }
+  #scroll-beam.is-on .scroll-beam-dot span { background: var(--g); }
+}
