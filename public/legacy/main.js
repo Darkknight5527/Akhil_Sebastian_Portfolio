@@ -198,17 +198,77 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   (function loop(){requestAnimationFrame(loop);t+=0.01;g.rotation.y=t*0.5;j2.rotation.z=Math.sin(t*0.7)*0.3;if(onScreen(renderer.domElement))renderer.render(scene,camera);})();
 })();
 
-/* ── CHIP ── */
+/* ── CHIP ── (rebuilt 19 Oct 2026 so it reads as a real chip: a QFP package with a
+   black epoxy body, gull-wing legs on all four sides, a pin-1 dot and a laser marking.
+   It turns slowly about its own face, so it never goes edge-on. Now and then a leg
+   lights up green, like a signal going in.) */
 (function(){
   const s=makeScene('chip-canvas');if(!s)return;
   const{renderer,scene,camera}=s;
-  const g=new THREE.Group();
-  g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2,2,0.28)),wMat()));
-  for(let side=0;side<4;side++){const angle=side*Math.PI/2;for(let pin=-2;pin<=2;pin++){const px=Math.cos(angle)*1.18-Math.sin(angle)*(pin*0.28),py=Math.sin(angle)*1.18+Math.cos(angle)*(pin*0.28),px2=Math.cos(angle)*1.5-Math.sin(angle)*(pin*0.28),py2=Math.sin(angle)*1.5+Math.cos(angle)*(pin*0.28);const pg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(px,py,0),new THREE.Vector3(px2,py2,0)]);g.add(new THREE.Line(pg,wMat()));}}
-  for(let i=0;i<3;i++){for(let j=0;j<3;j++){const dot=new THREE.Mesh(new THREE.CircleGeometry(0.07,8),new THREE.MeshBasicMaterial({color:0x00e57a,transparent:true,opacity:0.45,side:THREE.DoubleSide}));dot.position.set(-0.5+i*0.5,-0.5+j*0.5,0.15);g.add(dot);}}
-  scene.add(g);
-  let t=0;
-  (function loop(){requestAnimationFrame(loop);t+=0.01;g.rotation.y=t*0.55;g.rotation.x=Math.sin(t*0.35)*0.22;if(onScreen(renderer.domElement))renderer.render(scene,camera);})();
+  camera.position.set(0,0,4.3);
+  scene.children.filter(o=>o.isLight).forEach(o=>scene.remove(o)); // drop the green-tinted default lights
+  // neutral lights so the metal legs look like metal
+  scene.add(new THREE.HemisphereLight(0xffffff,0x0a1a10,0.6));
+  const key=new THREE.DirectionalLight(0xffffff,1.4);key.position.set(-2,4,5);scene.add(key);
+  const rim=new THREE.DirectionalLight(0x00e57a,0.8);rim.position.set(3,-2,2);scene.add(rim);
+
+  const tilt=new THREE.Group();tilt.rotation.x=-0.95;scene.add(tilt);
+  const chip=new THREE.Group();tilt.add(chip);
+
+  const S=1.9,T=0.26; // body size and thickness
+  // body
+  const body=new THREE.Mesh(new THREE.BoxGeometry(S,S,T),new THREE.MeshStandardMaterial({color:0x08090a,roughness:0.6,metalness:0.1}));
+  chip.add(body);
+  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(S,S,T)),new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opacity:0.35}));
+  chip.add(edges);
+  // laser marking on top
+  const tc=document.createElement('canvas');tc.width=512;tc.height=512;
+  const tex=new THREE.CanvasTexture(tc);
+  function drawTop(){
+    const g=tc.getContext('2d');g.clearRect(0,0,512,512);
+    g.fillStyle='rgba(210,220,215,0.55)';g.textAlign='center';
+    g.font="bold 64px 'Space Mono', monospace";g.fillText('AS-V93K',256,250);
+    g.font="34px 'Space Mono', monospace";g.fillText('ATE  TEST  2026',256,310);
+    // pin-1 dimple
+    g.beginPath();g.arc(70,70,22,0,Math.PI*2);g.fillStyle='rgba(255,255,255,0.12)';g.fill();
+    tex.needsUpdate=true;
+  }
+  drawTop();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawTop);
+  const top=new THREE.Mesh(new THREE.PlaneGeometry(S*0.98,S*0.98),new THREE.MeshBasicMaterial({map:tex,transparent:true}));
+  top.position.z=T/2+0.002;chip.add(top);
+
+  // gull-wing legs: out from the body, bend down, foot flat on the board
+  const N=12,pitch=S*0.82/(N-1),legW=0.07,legT=0.035;
+  const legMat=()=>new THREE.MeshStandardMaterial({color:0x9aa39f,metalness:0.55,roughness:0.35,emissive:0x00e57a,emissiveIntensity:0});
+  const out=new THREE.BoxGeometry(0.16,legW,legT), drop=new THREE.BoxGeometry(legT,legW,0.2), foot=new THREE.BoxGeometry(0.16,legW,legT);
+  const legs=[];
+  for(let side=0;side<4;side++){
+    const holder=new THREE.Group();holder.rotation.z=side*Math.PI/2;chip.add(holder);
+    for(let i=0;i<N;i++){
+      const m=legMat(),leg=new THREE.Group(),y=-S*0.41+i*pitch;
+      const a=new THREE.Mesh(out,m);a.position.set(S/2+0.08,0,0);
+      const b=new THREE.Mesh(drop,m);b.position.set(S/2+0.16,0,-0.1);
+      const c=new THREE.Mesh(foot,m);c.position.set(S/2+0.24,0,-0.2);
+      leg.add(a,b,c);leg.position.y=y;holder.add(leg);legs.push({m:m,glow:0});
+    }
+  }
+  // faint board pads under the feet
+  const padMat=new THREE.MeshBasicMaterial({color:0x00e57a,transparent:true,opacity:0.12});
+  for(let side=0;side<4;side++){
+    const holder=new THREE.Group();holder.rotation.z=side*Math.PI/2;chip.add(holder);
+    for(let i=0;i<N;i++){const p=new THREE.Mesh(new THREE.PlaneGeometry(0.22,0.1),padMat);p.position.set(S/2+0.25,-S*0.41+i*pitch,-0.22);holder.add(p);}
+  }
+
+  let t=0,next=0;
+  (function loop(){requestAnimationFrame(loop);
+    if(!onScreen(renderer.domElement))return;
+    t+=0.01;
+    chip.rotation.z=t*0.35;                       // turn about its own face
+    tilt.rotation.x=-0.95+Math.sin(t*0.6)*0.08;   // gentle bob
+    if(t>next){legs[(Math.random()*legs.length)|0].glow=1;next=t+0.12+Math.random()*0.25;}
+    for(let i=0;i<legs.length;i++){const L=legs[i];if(L.glow>0){L.glow=Math.max(0,L.glow-0.02);L.m.emissiveIntensity=L.glow*1.6;}}
+    renderer.render(scene,camera);
+  })();
 })();
 
 /* ── OSCILLOSCOPE ── */
