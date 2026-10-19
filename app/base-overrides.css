@@ -298,3 +298,18 @@ img.pj-cover { display: block; }
   .art-wave, .art-strobe, .art-layer, .art-nozzle, .art-led, .art-draw { animation: none; }
   .pj-more { transition: none; }
 }
+
+/* research paper block inside the robot card */
+.pj-paper { display: flex; gap: 14px; margin-top: 18px; padding: 16px; border-radius: 14px;
+  border: 1px solid rgba(0,229,122,.22); background: linear-gradient(135deg, rgba(0,229,122,.07), rgba(0,229,122,.015)); }
+.pj-paper-ic { flex-shrink: 0; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  color: var(--g); background: rgba(0,229,122,.1); }
+.pj-paper-tx { min-width: 0; }
+.pj-paper-k { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--g); letter-spacing: .14em; text-transform: uppercase; }
+.pj-paper-t { font-family: 'Inter', sans-serif; font-size: 15.5px; font-weight: 600; color: #fff; line-height: 1.4; margin-top: 6px; }
+.pj-paper-a { font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(255,255,255,.55); line-height: 1.5; margin-top: 6px; }
+.pj-paper-w { font-family: 'Inter', sans-serif; font-size: 12.5px; color: rgba(255,255,255,.4); margin-top: 4px; }
+.pj-paper-l { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; }
+.pj-paper-l a { display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 500;
+  color: var(--g); text-decoration: none; border-bottom: 1px solid rgba(0,229,122,.3); padding-bottom: 1px; }
+.pj-paper-l a:hover { border-bottom-color: var(--g); }
