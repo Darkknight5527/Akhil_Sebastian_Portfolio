@@ -14,7 +14,19 @@
     setTimeout(function () { window.dispatchEvent(new Event("resize")); }, 480);
   }
 
+  // robot card: when open, the 3D model takes the picture spot and the photo viewer
+  // moves down into the bottom-right slot; closing puts it back
+  var slidesEl = document.getElementById("robot-slides");
+  var slidesHome = slidesEl && slidesEl.parentNode;
+  function placeSlides(card, open) {
+    if (!slidesEl || !card.contains(slidesEl.parentNode === slidesHome ? slidesHome : slidesEl)) return;
+    var slot = card.querySelector(".pj-photo-slot");
+    if (open && slot) slot.appendChild(slidesEl);
+    else slidesHome.insertBefore(slidesEl, slidesHome.firstChild);
+  }
+
   function setOpen(card, open) {
+    placeSlides(card, open);
     card.classList.toggle("open", open);
     card.setAttribute("aria-expanded", open ? "true" : "false");
     card.setAttribute("aria-label", card.querySelector(".pj-title").textContent + (open ? ": hide details" : ": show details"));

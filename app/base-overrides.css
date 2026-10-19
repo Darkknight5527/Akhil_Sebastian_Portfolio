@@ -371,3 +371,19 @@ img.pj-cover { display: block; }
   /* open robot card: the photo panel runs the full height of the text beside it */
   .pj-featured.open > .pj-media { align-self: stretch; aspect-ratio: auto; min-height: 380px; }
 }
+
+/* ── 19 Oct 2026 (v3): open robot card = 3D model top-left, photos bottom-right ── */
+.pj-slides { position: absolute; inset: 0; overflow: hidden; border-radius: 14px; background: #070b09; }
+.pj-photo-slot .pj-slides { position: relative; inset: auto; aspect-ratio: 4 / 3; }
+.pj-feat-media .pj-model { border-radius: 14px; }
+.pj-featured.open .pj-extra .pj-thumbs { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+.pj-featured.open .pj-photo-slot .rs-dots { display: none; }
+.pj-featured.open .pj-photo-slot img[id^="rslide-"] { cursor: zoom-in; }
+.pj-featured.open .pj-extra { align-items: start; }
+.pj-featured.open .pj-extra-col > .pj-paper { flex: 0 1 auto; }
+@media (min-width: 761px) {
+  .pj-featured.open > .pj-media { min-height: 420px; }
+}
+@media (max-width: 760px) {
+  .pj-featured > .pj-media { align-self: stretch; } /* full-width picture/model on phones */
+}
