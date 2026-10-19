@@ -1,9 +1,8 @@
 /*
  * Scroll trace (19 Oct 2026): replaces the page scrollbar on laptops/desktops.
- * Drawn like a PCB trace: a copper line routed with 45° bends, a via at every bend
- * and square solder pads at both ends. As you scroll, the trace "powers up" from the
- * top pad down to your position — vias light as the signal passes them and a bright
- * signal pulse rides the tip. Click or drag the trace to scroll. Phones keep their
+ * Drawn like a PCB trace: a copper line routed with 45° bends and square solder
+ * pads at both ends (bend vias removed 19 Oct 2026 on request). As you scroll, the trace "powers up" from the
+ * top pad down to your position, with a bright signal pulse riding the tip. Click or drag the trace to scroll. Phones keep their
  * normal scroll indicator (see base-overrides.css).
  */
 (function () {
@@ -35,7 +34,6 @@
   var copper = el("path", { fill: "none", stroke: "#123a26", "stroke-width": "2.6", "stroke-linejoin": "round" }, svg);
   var lit = el("path", { fill: "none", stroke: "#00e57a", "stroke-width": "2.2", "stroke-linejoin": "round", "stroke-opacity": "0.85", filter: "url(#trace-glow)" }, svg);
   var spark = el("path", { fill: "none", stroke: "#c8ffe6", "stroke-width": "2.4", "stroke-linecap": "round", "stroke-linejoin": "round", filter: "url(#trace-glow)" }, svg);
-  var viaG = el("g", {}, svg);
   var padTop = el("g", {}, svg), padBot = el("g", {}, svg);
   var tip = el("circle", { r: "3", fill: "#e6fff4", filter: "url(#trace-glow)" }, svg);
 
@@ -45,7 +43,7 @@
     el("circle", { cx: CX, cy: y, r: 2.6, fill: "#1d4a33", class: "pad-hole" }, g);
   }
 
-  var H = 0, len = 0, vias = [], cur = 0;
+  var H = 0, len = 0, cur = 0;
 
   function layout() {
     H = Math.max(160, wrap.clientHeight);
@@ -61,16 +59,6 @@
     [copper, lit, spark].forEach(function (p) { p.setAttribute("d", d); });
     len = copper.getTotalLength();
     lit.setAttribute("stroke-dasharray", len + " " + len);
-    // vias at every bend
-    while (viaG.firstChild) viaG.removeChild(viaG.firstChild);
-    vias = [];
-    for (var i = 1; i < pts.length - 1; i++) {
-      var v = el("circle", { cx: pts[i][0], cy: pts[i][1], r: 3.2, fill: "#07120c", stroke: "#1d4a33", "stroke-width": "1.2" }, viaG);
-      // distance along the path to this via (path is monotonic in y, so search by length)
-      var lo = 0, hi = len;
-      for (var k = 0; k < 20; k++) { var m = (lo + hi) / 2; if (copper.getPointAtLength(m).y < pts[i][1]) lo = m; else hi = m; }
-      vias.push({ el: v, at: lo });
-    }
     pad(padTop, top);
     pad(padBot, bot);
   }
@@ -94,11 +82,6 @@
     tip.setAttribute("cx", String(pt.x));
     tip.setAttribute("cy", String(pt.y));
     tip.setAttribute("opacity", at > 2 ? "1" : "0");
-    for (var i = 0; i < vias.length; i++) {
-      var on = vias[i].at <= at;
-      vias[i].el.setAttribute("stroke", on ? "#00e57a" : "#1d4a33");
-      vias[i].el.setAttribute("filter", on ? "url(#trace-glow)" : "none");
-    }
     wrap.classList.toggle("is-on", window.scrollY > 4);
     wrap.classList.toggle("is-end", p > 0.995);
     requestAnimationFrame(frame);
