@@ -499,7 +499,7 @@ window.addEventListener('load', function(){
       if(pcb){ pcb.style.opacity='0.02'; }
     }, 400);
     setTimeout(function(){
-      if(pcb){ pcb.style.opacity='0.42'; }
+      if(pcb){ pcb.style.opacity='1'; } /* back to full brightness (was 0.42, which left the board dim — fixed 19 Oct 2026) */
     }, 650);
 
     /* eyebrow sparks on */

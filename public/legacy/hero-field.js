@@ -2,8 +2,8 @@
  * Home-page background from the effects model (agreed 19 Oct 2026), drawn on the
  * original #hero-canvas so the robot easter egg's dim/revive still works.
  * Interactive PCB field: the cursor pulls signals towards it and lights up nearby
- * chips; a click fires a shockwave that knocks nearby signals off their traces
- * so they fly out with it (19 Oct 2026). Replaces the original background, which was
+ * chips; a click fires a shockwave that crosses the whole board and throws every
+ * signal it passes off its trace, flying out with it (19 Oct 2026). Replaces the original background, which was
  * the first block of main.js. Pauses when off screen; static with reduced motion.
  */
 (function () {
@@ -202,7 +202,7 @@
         }
         for (const s of shocks) {
             ctx.lineWidth = 1.4;
-            ctx.strokeStyle = G(s.life * 0.55);
+            ctx.strokeStyle = G(Math.max(0.12, s.life) * 0.55);
             ctx.beginPath();
             ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
             ctx.stroke();
@@ -224,9 +224,10 @@
         // shockwaves light nodes as they pass and launch pulses outward
         for (const s of shocks) {
             const prev = s.r;
-            s.r += 7;
-            s.life *= 0.955;
-            if (s.life > 0.25) {
+            s.r += 9;
+            s.life = Math.max(0, 1 - s.r / s.maxR);
+            {
+                // every signal the ring passes is thrown back with it
                 for (let i = pulses.length - 1; i >= 0; i--) {
                     const p = pulses[i];
                     const [px, py] = routePos(nodes[p.edge.from], nodes[p.edge.to], p.t);
@@ -250,15 +251,15 @@
                 }
             });
         }
-        while (shocks.length && shocks[0].life < 0.05)
-            shocks.shift();
+        for (let i = shocks.length - 1; i >= 0; i--)
+            if (shocks[i].r >= shocks[i].maxR) shocks.splice(i, 1);
         for (let i = flyers.length - 1; i >= 0; i--) {
             const f = flyers[i];
             f.trail.push([f.x, f.y]);
             if (f.trail.length > 9) f.trail.shift();
             f.x += f.vx; f.y += f.vy;
-            f.vx *= 0.955; f.vy *= 0.955;
-            f.life -= 0.016;
+            f.vx *= 0.965; f.vy *= 0.965;
+            f.life -= 0.014;
             if (f.life <= 0 || f.x < -40 || f.x > W + 40 || f.y < -40 || f.y > H + 40) flyers.splice(i, 1);
         }
         // the cursor keeps drawing fresh signals towards itself
@@ -327,7 +328,10 @@
         const r = inside(e);
         if (!r || e.target.closest("a,button"))
             return;
-        shocks.push({ x: e.clientX - r.left, y: e.clientY - r.top, r: 0, life: 1 });
+        const sx = e.clientX - r.left, sy = e.clientY - r.top;
+        // the ring keeps going until it has reached the farthest corner
+        const maxR = Math.max(Math.hypot(sx, sy), Math.hypot(W - sx, sy), Math.hypot(sx, H - sy), Math.hypot(W - sx, H - sy)) + 30;
+        shocks.push({ x: sx, y: sy, r: 0, life: 1, maxR });
     };
     const io = new IntersectionObserver(([en]) => {
         const vis = en.isIntersecting && !document.hidden;
