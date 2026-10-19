@@ -270,7 +270,7 @@ document.querySelectorAll('.rv,.rl,.rr').forEach(el=>{
   /* card inner spotlight */
   document.querySelectorAll('.exp-item > div,.skill-card,.contact-link').forEach(function(el){el.classList.add('spot');el.addEventListener('mousemove',function(ev){var r=el.getBoundingClientRect();el.style.setProperty('--mx',(ev.clientX-r.left)+'px');el.style.setProperty('--my',(ev.clientY-r.top)+'px');},{passive:true});});
   /* magnetic buttons */
-  document.querySelectorAll('.btn-p,.btn-o').forEach(function(b){b.addEventListener('mousemove',function(e){var r=b.getBoundingClientRect();b.style.transform='translateY(-2px) translate('+((e.clientX-r.left-r.width/2)*0.28)+'px,'+((e.clientY-r.top-r.height/2)*0.28)+'px)';});b.addEventListener('mouseleave',function(){b.style.transform='';});});
+  document.querySelectorAll('.btn-p,.btn-o').forEach(function(b){b.addEventListener('mousemove',function(e){var r=b.getBoundingClientRect();/* magnetic pull capped at 5px so a button never drifts onto its neighbour (19 Oct 2026) */var mx=Math.max(-5,Math.min(5,(e.clientX-r.left-r.width/2)*0.28)),my=Math.max(-4,Math.min(4,(e.clientY-r.top-r.height/2)*0.28));b.style.transform='translateY(-2px) translate('+mx+'px,'+my+'px)';});b.addEventListener('mouseleave',function(){b.style.transform='';});});
 })();
 
 /* ── HAMBURGER MENU ── */

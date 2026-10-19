@@ -45,7 +45,7 @@
     l.style.display = "inline-block";
     l.style.transition = "transform .3s ease-out, color .3s ease-out, text-shadow .3s ease-out, -webkit-text-stroke-width .3s ease-out";
     l.style.webkitTextStroke = "0px currentColor";
-    // white letters warm towards green; green letters ("SEBASTIAN") brighten towards mint
+    // opposites: white letters turn green, green letters ("SEBASTIAN") turn white
     l.__green = !!l.closest(".gc");
   });
 
@@ -77,7 +77,7 @@
         l.style.transform = "translateY(" + (-10 * k).toFixed(1) + "px)";
         l.style.webkitTextStrokeWidth = (2.4 * k).toFixed(2) + "px";
         l.style.color = l.__green
-          ? "color-mix(in srgb, #b6ffdc " + pct + "%, #00e57a)"
+          ? "color-mix(in srgb, #ffffff " + pct + "%, #00e57a)"
           : "color-mix(in srgb, #00e57a " + pct + "%, #ffffff)";
         l.style.textShadow = k > 0.02 ? "0 0 " + Math.round(28 * k) + "px rgba(0,229,122," + (0.75 * k).toFixed(2) + ")" : "none";
       }
