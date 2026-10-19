@@ -16,15 +16,16 @@ function sendMessage(){
   const mailto = `mailto:sskzm5527@gmail.com?subject=${encodeURIComponent(subject + ' — from ' + name)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + msg)}`;
   window.location.href = mailto;
 
-  btn.textContent = 'Message Sent ✓';
-  btn.style.background = '#00b85e';
+  const label = btn.querySelector('.cf-label') || btn; // running-border version keeps its layers
+  label.textContent = 'Message Sent ✓';
+  btn.classList.add('sent');
   status.style.display='block';
   status.style.color='var(--g)';
   status.textContent='// Opening your mail client...';
 
   setTimeout(()=>{
-    btn.textContent='Send Message';
-    btn.style.background='var(--g)';
+    label.textContent='Send Message →';
+    btn.classList.remove('sent');
     status.style.display='none';
   }, 3000);
 }

@@ -116,3 +116,27 @@ nav.filled { padding: 12px 40px; }
 .lang-card:nth-child(4) .lang-fill { transition-delay: 0.24s; }
 @media (max-width: 900px) { .lang-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (prefers-reduced-motion: reduce) { .lang-fill { width: var(--w); transition: none; } }
+
+/* ── Send button: running-light border (effects model's moving border) ── */
+#cf-btn.run-border{
+  position:relative;overflow:hidden;display:block;
+  height:48px;padding:1px !important;
+  background:rgba(255,255,255,.04) !important;
+  border-radius:14px !important;
+  color:var(--g) !important;font-size:15px !important;font-weight:600;letter-spacing:.01em;
+}
+#cf-btn .cf-orbit{position:absolute;inset:0;pointer-events:none}
+#cf-btn .cf-orbit svg{position:absolute;inset:0;overflow:visible}
+#cf-btn .cf-blob{
+  position:absolute;left:0;top:0;width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle,#00e57a 40%,transparent 60%);opacity:.8;
+}
+#cf-btn .cf-inner{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:100%;height:100%;border-radius:13px;
+  background:rgba(4,12,8,.9);border:1px solid rgba(255,255,255,.07);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  transition:background .2s,border-color .2s,color .2s;
+}
+#cf-btn.run-border:hover .cf-inner{background:rgba(6,22,14,.92);border-color:rgba(0,229,122,.3);color:#3dffa0}
+#cf-btn.run-border.sent .cf-inner{background:rgba(0,229,122,.14);border-color:rgba(0,229,122,.45)}
