@@ -302,15 +302,19 @@
         if (pulses.length > maxP)
             pulses.splice(0, pulses.length - maxP);
     }
+    // Performance (19 Oct 2026): the canvas box is read once per frame here, and the
+    // pointer handlers reuse it instead of measuring the page on every mouse move.
+    let rect = c.getBoundingClientRect();
     function loop() {
         if (!running)
             return;
+        rect = c.getBoundingClientRect();
         update();
         draw();
         raf = requestAnimationFrame(loop);
     }
     const inside = (e) => {
-        const r = c.getBoundingClientRect();
+        const r = rect;
         return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom ? r : null;
     };
     const onMove = (e) => {

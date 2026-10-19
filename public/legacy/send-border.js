@@ -52,8 +52,11 @@
     rect.setAttribute("ry", RADIUS);
     len = rect.getTotalLength();
   }
+  // Performance (19 Oct 2026): only animate while the button is on screen
+  var visible = false;
+  new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }).observe(btn);
   function place(now) {
-    if (len) {
+    if (len && (visible || reduce)) {
       var pt = rect.getPointAtLength(((now % DURATION) / DURATION) * len);
       blob.style.transform = "translate(" + pt.x + "px," + pt.y + "px) translate(-50%,-50%)";
     }

@@ -73,14 +73,22 @@
     pad(padBot, bot);
   }
 
+  var drawn = -1, maxScroll = 1;
+  function measureMax() { maxScroll = document.documentElement.scrollHeight - window.innerHeight; }
+  new ResizeObserver(measureMax).observe(document.body);
+  window.addEventListener("resize", measureMax);
   function progress() {
-    var max = document.documentElement.scrollHeight - window.innerHeight;
-    return max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    return maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
   }
-
   function frame() {
+    requestAnimationFrame(frame);
+    if (!wrap.offsetWidth) return; // hidden (phones): do nothing
     var p = progress();
     cur += (p - cur) * (reduce ? 1 : 0.16);
+    if (Math.abs(p - cur) < 0.0004) cur = p;
+    // Performance (19 Oct 2026): only redraw when the position actually moved
+    if (cur === drawn) return;
+    drawn = cur;
     var at = cur * len;
     lit.setAttribute("stroke-dashoffset", String(len - at));
     // short bright spark trailing behind the tip
@@ -94,7 +102,6 @@
     tip.setAttribute("opacity", at > 2 ? "1" : "0");
     wrap.classList.toggle("is-on", window.scrollY > 4);
     wrap.classList.toggle("is-end", p > 0.995);
-    requestAnimationFrame(frame);
   }
 
   // click / drag the trace to scroll
@@ -109,7 +116,7 @@
   wrap.addEventListener("pointerup", function () { dragging = false; });
   wrap.addEventListener("pointercancel", function () { dragging = false; });
 
-  new ResizeObserver(layout).observe(wrap);
+  new ResizeObserver(function () { layout(); drawn = -1; }).observe(wrap);
   layout();
   requestAnimationFrame(frame);
 })();

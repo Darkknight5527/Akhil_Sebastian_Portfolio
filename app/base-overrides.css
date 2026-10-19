@@ -63,8 +63,9 @@ nav.filled { padding: 12px 40px; }
 .hero-btns .btn:nth-child(2) { background: var(--g); color: #030805; border-color: var(--g); }
 .hero-btns .btn:nth-child(2):hover { background: #fff; border-color: #fff; color: #030805; }
 .hero-btns .btn:nth-child(n + 3) {
-  background: rgba(3, 8, 5, 0.5); color: rgba(255, 255, 255, 0.85); border-color: rgba(255, 255, 255, 0.15);
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  /* solid tint instead of a live blur: the blur had to be redrawn over the animated
+     background every frame (performance, 19 Oct 2026) */
+  background: rgba(3, 8, 5, 0.72); color: rgba(255, 255, 255, 0.85); border-color: rgba(255, 255, 255, 0.15);
 }
 .hero-btns .btn:nth-child(n + 3):hover { border-color: var(--g); color: #fff; }
 @media (max-width: 768px) {
@@ -134,9 +135,13 @@ nav.filled { padding: 12px 40px; }
 #cf-btn .cf-inner{
   position:relative;display:flex;align-items:center;justify-content:center;
   width:100%;height:100%;border-radius:13px;
-  background:rgba(4,12,8,.9);border:1px solid rgba(255,255,255,.07);
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  background:rgba(4,12,8,.94);border:1px solid rgba(255,255,255,.07);
   transition:background .2s,border-color .2s,color .2s;
 }
 #cf-btn.run-border:hover .cf-inner{background:rgba(6,22,14,.92);border-color:rgba(0,229,122,.3);color:#3dffa0}
 #cf-btn.run-border.sent .cf-inner{background:rgba(0,229,122,.14);border-color:rgba(0,229,122,.45)}
+
+/* ── Performance (19 Oct 2026) ──
+   The filled nav is 98% opaque, so its blur was invisible but still recalculated on
+   every scroll frame. */
+nav.filled{-webkit-backdrop-filter:none;backdrop-filter:none}

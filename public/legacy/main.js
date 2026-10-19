@@ -1,6 +1,14 @@
 /* ── NEURAL ELECTRONICS BACKGROUND ── moved: now public/legacy/hero-field.js (effects-model version, 19 Oct 2026) */
 
 /* ── THREE.JS helper: make renderer for a canvas ── */
+/* Performance (19 Oct 2026): each 3D canvas only redraws while it is on screen and the
+   tab is visible. Before this, all six scenes redrew 60 times a second all the time. */
+var __vis = new WeakMap();
+var __io = new IntersectionObserver(function(es){ es.forEach(function(e){ __vis.set(e.target, e.isIntersecting); }); }, { rootMargin: '150px' });
+function onScreen(canvas){
+  if(!__vis.has(canvas)){ __vis.set(canvas, false); __io.observe(canvas); }
+  return __vis.get(canvas) && !document.hidden;
+}
 function makeScene(canvasId){
   const canvas=document.getElementById(canvasId);
   if(!canvas)return null;
@@ -168,7 +176,7 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
       rim.position.x = Math.sin(t * 0.5) * 2;
     }
 
-    renderer.render(scene, camera);
+    if(onScreen(renderer.domElement))renderer.render(scene, camera);
   })();
 })();
 
@@ -187,7 +195,7 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   [[-0.12,0],[0.12,0]].forEach(([ex])=>{const fg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0.98+ex,2.18,0),new THREE.Vector3(0.98+ex,2.0,0)]);g.add(new THREE.Line(fg,wMat()));});
   scene.add(g);
   let t=0;
-  (function loop(){requestAnimationFrame(loop);t+=0.01;g.rotation.y=t*0.5;j2.rotation.z=Math.sin(t*0.7)*0.3;renderer.render(scene,camera);})();
+  (function loop(){requestAnimationFrame(loop);t+=0.01;g.rotation.y=t*0.5;j2.rotation.z=Math.sin(t*0.7)*0.3;if(onScreen(renderer.domElement))renderer.render(scene,camera);})();
 })();
 
 /* ── CHIP ── */
@@ -200,7 +208,7 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   for(let i=0;i<3;i++){for(let j=0;j<3;j++){const dot=new THREE.Mesh(new THREE.CircleGeometry(0.07,8),new THREE.MeshBasicMaterial({color:0x00e57a,transparent:true,opacity:0.45,side:THREE.DoubleSide}));dot.position.set(-0.5+i*0.5,-0.5+j*0.5,0.15);g.add(dot);}}
   scene.add(g);
   let t=0;
-  (function loop(){requestAnimationFrame(loop);t+=0.01;g.rotation.y=t*0.55;g.rotation.x=Math.sin(t*0.35)*0.22;renderer.render(scene,camera);})();
+  (function loop(){requestAnimationFrame(loop);t+=0.01;g.rotation.y=t*0.55;g.rotation.x=Math.sin(t*0.35)*0.22;if(onScreen(renderer.domElement))renderer.render(scene,camera);})();
 })();
 
 /* ── OSCILLOSCOPE ── */
@@ -227,7 +235,7 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
     for(let i=0;i<pos.count;i++){const x=pos.getX(i);pos.setY(i,Math.sin(x*3+wavePhase)*0.45+Math.sin(x*7+wavePhase*1.3)*0.1);}
     pos.needsUpdate=true;
     g.rotation.y=Math.sin(t*0.3)*0.25;
-    renderer.render(scene,camera);})();
+    if(onScreen(renderer.domElement))renderer.render(scene,camera);})();
 })();
 
 /* ── PROGRESS BAR + NAV FILL (merged scroll) ── */
@@ -740,7 +748,7 @@ function filterProjects(cat){
       model.position.y=Math.sin(t*0.6)*0.06;
       rim.position.x=Math.sin(t*0.5)*2;
     }
-    renderer.render(scene,camera);
+    if(onScreen(renderer.domElement))renderer.render(scene,camera);
   })();
 })();
 
@@ -824,7 +832,7 @@ window.addEventListener('load', function(){
       else { velX*=0.92;velY*=0.92;rotX+=velX;rotY+=velY; model.rotation.x=rotX; model.rotation.y=rotY; }
       model.position.y=Math.sin(t*0.5)*0.04;
     }
-    renderer.render(scene,camera);
+    if(onScreen(renderer.domElement))renderer.render(scene,camera);
   })();
 });
 
