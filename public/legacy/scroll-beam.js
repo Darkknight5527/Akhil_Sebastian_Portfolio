@@ -1,6 +1,6 @@
 /*
  * Scroll trace (19 Oct 2026): replaces the page scrollbar on laptops/desktops.
- * Drawn like a PCB trace: a copper line routed with 45° bends and square solder
+ * Drawn like a PCB trace: a copper line routed with smooth, rounded 45° bends and square solder
  * pads at both ends (bend vias removed 19 Oct 2026 on request). As you scroll, the trace "powers up" from the
  * top pad down to your position, with a bright signal pulse riding the tip. Click or drag the trace to scroll. Phones keep their
  * normal scroll indicator (see base-overrides.css).
@@ -31,7 +31,7 @@
   el("feMergeNode", { in: "b" }, mg);
   el("feMergeNode", { in: "SourceGraphic" }, mg);
 
-  var copper = el("path", { fill: "none", stroke: "#123a26", "stroke-width": "2.6", "stroke-linejoin": "round" }, svg);
+  var copper = el("path", { fill: "none", stroke: "#123a26", "stroke-width": "2.6", "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
   var lit = el("path", { fill: "none", stroke: "#00e57a", "stroke-width": "2.2", "stroke-linejoin": "round", "stroke-opacity": "0.85", filter: "url(#trace-glow)" }, svg);
   var spark = el("path", { fill: "none", stroke: "#c8ffe6", "stroke-width": "2.4", "stroke-linecap": "round", "stroke-linejoin": "round", filter: "url(#trace-glow)" }, svg);
   var padTop = el("g", {}, svg), padBot = el("g", {}, svg);
@@ -55,7 +55,17 @@
     var ys = [0.16, 0.38, 0.62, 0.84].map(function (f) { return top + span * f; });
     var pts = [[CX, top], [CX, ys[0] - j / 2], [L, ys[0] + j / 2], [L, ys[1] - j / 2], [R, ys[1] + j / 2],
                [R, ys[2] - j / 2], [L, ys[2] + j / 2], [L, ys[3] - j / 2], [CX, ys[3] + j / 2], [CX, bot]];
-    var d = "M " + pts.map(function (p) { return p[0] + " " + p[1]; }).join(" L ");
+    // round every corner: stop short of the bend and curve through it (a filleted 45° bend)
+    var RAD = 6, d = "M " + pts[0][0] + " " + pts[0][1];
+    for (var i = 1; i < pts.length - 1; i++) {
+      var a = pts[i - 1], c = pts[i], n = pts[i + 1];
+      var l1 = Math.hypot(c[0] - a[0], c[1] - a[1]), l2 = Math.hypot(n[0] - c[0], n[1] - c[1]);
+      var r = Math.min(RAD, l1 / 2, l2 / 2);
+      var p1 = [c[0] - (c[0] - a[0]) / l1 * r, c[1] - (c[1] - a[1]) / l1 * r];
+      var p2 = [c[0] + (n[0] - c[0]) / l2 * r, c[1] + (n[1] - c[1]) / l2 * r];
+      d += " L " + p1[0].toFixed(2) + " " + p1[1].toFixed(2) + " Q " + c[0] + " " + c[1] + " " + p2[0].toFixed(2) + " " + p2[1].toFixed(2);
+    }
+    d += " L " + pts[pts.length - 1][0] + " " + pts[pts.length - 1][1];
     [copper, lit, spark].forEach(function (p) { p.setAttribute("d", d); });
     len = copper.getTotalLength();
     lit.setAttribute("stroke-dasharray", len + " " + len);
