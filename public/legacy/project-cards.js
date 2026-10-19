@@ -40,8 +40,18 @@
       var t = e.target;
       // things that do their own job inside the card
       if (t.closest("a, canvas, .rsdot")) return;
+      var go = t.closest("[data-go]");
+      if (go) { var dot = document.querySelector('.rsdot[data-i="' + go.dataset.go + '"]'); if (dot) dot.click(); return; }
       var lb = t.closest("[data-lb]");
-      if (lb && card.classList.contains("open") && window.openLightbox) { window.openLightbox(+lb.dataset.lb); return; }
+      if (lb && card.classList.contains("open") && window.openLightbox) {
+        // the photos are stacked, so open whichever one is showing, not the one on top
+        var idx = +lb.dataset.lb;
+        if (lb.id && lb.id.indexOf("rslide-") === 0) {
+          var shown = document.querySelectorAll('[id^="rslide-"]');
+          for (var k = 0; k < shown.length; k++) if (shown[k].style.opacity === "1") { idx = k; break; }
+        }
+        window.openLightbox(idx); return;
+      }
       if (card.classList.contains("open") && !t.closest(".pj-explore")) return; // reading/selecting text shouldn't close it
       toggle(card);
     });
@@ -65,6 +75,21 @@
       });
     }, { passive: true });
   });
+
+  // featured slideshow: keep the blurred backdrop and the thumbnail highlight in step
+  // with the photo that main.js is showing (it updates the caption on every change)
+  var cap = document.getElementById("rs-caption"), bg = document.getElementById("rs-bg");
+  if (cap && bg) {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('[id^="rslide-"]'));
+    var thumbs = Array.prototype.slice.call(document.querySelectorAll(".pj-thumb[data-go]"));
+    new MutationObserver(function () {
+      for (var i = 0; i < slides.length; i++) if (slides[i].alt === cap.textContent) {
+        bg.src = slides[i].src;
+        thumbs.forEach(function (th, k) { th.classList.toggle("on", k === i); });
+        break;
+      }
+    }).observe(cap, { childList: true, characterData: true, subtree: true });
+  }
 
   // a card left alone on the last row of the grid is shown full-width instead
   function markWide() {
