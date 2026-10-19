@@ -421,7 +421,7 @@ window.addEventListener('load', function(){
     if(timer) clearTimeout(timer);
     timer = null;
     if(!onHero) return;
-    timer = setTimeout(runEasterEgg, 15000);
+    timer = setTimeout(runEasterEgg, 60000); /* 1 minute idle on the home section (was 15 s) */
   }
   resetTimer();
 
