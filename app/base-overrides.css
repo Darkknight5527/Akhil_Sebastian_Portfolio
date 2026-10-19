@@ -36,3 +36,40 @@ nav.filled { padding: 12px 40px; }
     radial-gradient(ellipse 55% 45% at 50% 50%, rgba(3, 8, 5, 0.55) 0%, rgba(3, 8, 5, 0.15) 60%, transparent 100%),
     linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(3, 8, 5, 0.95) 100%);
 }
+
+/* Home buttons styled like the effects model, keeping the base icons (19 Oct 2026):
+   rounded pills, larger sentence-case text; "View projects" has a green light running
+   round its border, "Resume" is solid green, GitHub and Contact are outlined. */
+@property --hb-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes hb-spin { to { --hb-a: 360deg; } }
+.hero-btns { gap: 12px; }
+.hero-btns .btn {
+  font-family: "Inter", sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 0; text-transform: none;
+  height: 48px; padding: 0 24px; border-radius: 999px; gap: 9px;
+}
+.hero-btns .btn svg { width: 15px; height: 15px; }
+.hero-btns .btn:nth-child(1) {
+  position: relative; isolation: isolate;
+  background: rgba(3, 8, 5, 0.9); color: var(--g); border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.hero-btns .btn:nth-child(1)::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from var(--hb-a), transparent 0deg, transparent 240deg, rgba(0, 229, 122, 0.95) 320deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: hb-spin 3.5s linear infinite;
+}
+.hero-btns .btn:nth-child(1):hover { background: rgba(0, 229, 122, 0.08); color: var(--g); }
+.hero-btns .btn:nth-child(2) { background: var(--g); color: #030805; border-color: var(--g); }
+.hero-btns .btn:nth-child(2):hover { background: #fff; border-color: #fff; color: #030805; }
+.hero-btns .btn:nth-child(n + 3) {
+  background: rgba(3, 8, 5, 0.5); color: rgba(255, 255, 255, 0.85); border-color: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.hero-btns .btn:nth-child(n + 3):hover { border-color: var(--g); color: #fff; }
+@media (max-width: 768px) {
+  .hero-btns .btn { font-size: 14px; height: 44px; padding: 0 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-btns .btn:nth-child(1)::before { animation: none; }
+}

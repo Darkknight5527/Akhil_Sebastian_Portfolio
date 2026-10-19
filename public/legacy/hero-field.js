@@ -2,7 +2,8 @@
  * Home-page background from the effects model (agreed 19 Oct 2026), drawn on the
  * original #hero-canvas so the robot easter egg's dim/revive still works.
  * Interactive PCB field: the cursor pulls signals towards it and lights up nearby
- * chips; a click fires a shockwave. Replaces the original background, which was
+ * chips; a click fires a shockwave that knocks nearby signals off their traces
+ * so they fly out with it (19 Oct 2026). Replaces the original background, which was
  * the first block of main.js. Pauses when off screen; static with reduced motion.
  */
 (function () {
@@ -16,6 +17,8 @@
     let W = 0, H = 0;
     let nodes = [], edges = [], pulses = [], adj = [];
     const shocks = [];
+    // signals knocked off their traces by a click, flying out with the shockwave
+    const flyers = [];
     const mouse = { x: -9999, y: -9999, on: false };
     let raf = 0, running = false;
     const mkNode = (x, y) => {
@@ -179,6 +182,24 @@
             ctx.fillStyle = `rgba(180,255,220,${p.brightness})`;
             ctx.fill();
         }
+        for (const f of flyers) {
+            const a = f.life * f.brightness;
+            f.trail.forEach(([tx, ty], k) => {
+                const q = (k + 1) / (f.trail.length + 1);
+                ctx.beginPath();
+                ctx.arc(tx, ty, f.size * q * 0.75, 0, Math.PI * 2);
+                ctx.fillStyle = G(a * q * 0.55);
+                ctx.fill();
+            });
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.size * 2.6, 0, Math.PI * 2);
+            ctx.fillStyle = G(a * 0.18);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(200,255,230,${a})`;
+            ctx.fill();
+        }
         for (const s of shocks) {
             ctx.lineWidth = 1.4;
             ctx.strokeStyle = G(s.life * 0.55);
@@ -205,6 +226,19 @@
             const prev = s.r;
             s.r += 7;
             s.life *= 0.955;
+            if (s.life > 0.25) {
+                for (let i = pulses.length - 1; i >= 0; i--) {
+                    const p = pulses[i];
+                    const [px, py] = routePos(nodes[p.edge.from], nodes[p.edge.to], p.t);
+                    const d = Math.hypot(px - s.x, py - s.y);
+                    if (d >= prev && d < s.r) {
+                        const ang = Math.atan2(py - s.y, px - s.x) + (Math.random() - 0.5) * 0.5;
+                        const sp = 8 + Math.random() * 5;
+                        flyers.push({ x: px, y: py, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, size: p.size, brightness: Math.max(0.8, p.brightness), life: 1, trail: [] });
+                        pulses.splice(i, 1);
+                    }
+                }
+            }
             nodes.forEach((n, i) => {
                 const d = Math.hypot(n.x - s.x, n.y - s.y);
                 if (d >= prev && d < s.r) {
@@ -218,6 +252,15 @@
         }
         while (shocks.length && shocks[0].life < 0.05)
             shocks.shift();
+        for (let i = flyers.length - 1; i >= 0; i--) {
+            const f = flyers[i];
+            f.trail.push([f.x, f.y]);
+            if (f.trail.length > 9) f.trail.shift();
+            f.x += f.vx; f.y += f.vy;
+            f.vx *= 0.955; f.vy *= 0.955;
+            f.life -= 0.016;
+            if (f.life <= 0 || f.x < -40 || f.x > W + 40 || f.y < -40 || f.y > H + 40) flyers.splice(i, 1);
+        }
         // the cursor keeps drawing fresh signals towards itself
         if (mouse.on && Math.random() < 0.25) {
             const cand = nodes.map((n, i) => ({ i, d: md(n) })).filter((o) => o.d > 60 && o.d < 280);

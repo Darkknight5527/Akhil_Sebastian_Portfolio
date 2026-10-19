@@ -318,6 +318,8 @@ window.addEventListener('load', function(){
   var animating = false;
   var onHero = true;
   var timer = null;
+  var abort = false;   /* set when the visitor leaves the home section mid-show (19 Oct 2026) */
+  var killed = false;  /* true while the hero is "unplugged" */
 
   function resizeCanvas(){
     canvas.width  = stage.offsetWidth  || window.innerWidth;
@@ -326,9 +328,19 @@ window.addEventListener('load', function(){
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
+  /* Only on the home section (19 Oct 2026): the home section must cover the middle
+     of the screen. Checked on load too, so opening the page further down doesn't count. */
+  var homeEl = document.getElementById('home');
+  function checkHero(){
+    var r = homeEl ? homeEl.getBoundingClientRect() : null;
+    var mid = window.innerHeight * 0.5;
+    onHero = !!r && r.top <= mid && r.bottom >= mid;
+  }
+  checkHero();
   window.addEventListener('scroll', function(){
-    onHero = window.scrollY < window.innerHeight * 0.5;
+    checkHero();
     if(!onHero && timer){ clearTimeout(timer); timer = null; }
+    if(!onHero && animating) abort = true;
     if(onHero && !animating) resetTimer();
   }, {passive:true});
 
@@ -339,6 +351,8 @@ window.addEventListener('load', function(){
   function resetTimer(){
     if(animating) return;
     if(timer) clearTimeout(timer);
+    timer = null;
+    if(!onHero) return;
     timer = setTimeout(runEasterEgg, 15000);
   }
   resetTimer();
@@ -524,8 +538,10 @@ window.addEventListener('load', function(){
 
   /* ── MAIN SEQUENCE ── */
   function runEasterEgg(){
+    checkHero();
     if(animating || !onHero) return;
     animating = true;
+    abort = false;
     resizeCanvas();
     stage.style.display = 'block';
 
@@ -542,6 +558,16 @@ window.addEventListener('load', function(){
     var speed  = 1.2; /* slow walk */
 
     function tick(){
+      if(abort){
+        /* visitor scrolled away: hide the robot and switch the hero back on */
+        abort = false;
+        stage.style.display = 'none';
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        if(killed){ killed = false; reviveHero(); }
+        animating = false;
+        resetTimer();
+        return;
+      }
       resizeCanvas();
       ctx.clearRect(0,0,canvas.width,canvas.height);
       var leg = frame * 0.12; /* slow leg swing */
@@ -568,6 +594,7 @@ window.addEventListener('load', function(){
         drawCable(robotX-35, groundY-42, plugged, plugAlpha);
         if(phaseF===30){
           killHero();
+          killed = true;
           /* screen dies — robot looks at us and grins wider */
         }
         phaseF++;
@@ -591,6 +618,7 @@ window.addEventListener('load', function(){
           stage.style.display='none';
           ctx.clearRect(0,0,canvas.width,canvas.height);
           setTimeout(function(){
+            killed = false;
             reviveHero();
             setTimeout(function(){
               animating = false;
