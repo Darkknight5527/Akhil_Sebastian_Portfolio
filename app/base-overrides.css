@@ -27,3 +27,12 @@ nav.filled { padding: 12px 40px; }
   .nav-logo { font-size: 16px; }
   .nav-links a { font-size: 18px; } /* full-screen phone menu */
 }
+
+/* Home background: lighter shading so the circuit board shows like in the effects
+   model (19 Oct 2026). A soft dark patch stays behind the centred name for readability,
+   and the bottom still fades into the next section. */
+.hero-overlay {
+  background:
+    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(3, 8, 5, 0.55) 0%, rgba(3, 8, 5, 0.15) 60%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(3, 8, 5, 0.95) 100%);
+}
