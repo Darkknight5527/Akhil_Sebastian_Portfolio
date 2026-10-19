@@ -1,12 +1,8 @@
-name: Deploy site (live HTML + base and effects previews)
+name: Deploy site
 
-# Publishes:
-#   /                 -> the HTML site on main (what visitors see)
-#   /next/            -> BASE model: Next.js copy of the live site (`nextjs-redesign` branch)
-#   /effects/         -> EFFECTS model: the version with all the effects (`effects` branch)
-#   /compare.html     -> base and effects side by side
-# Runs on every push to main. After pushing to either preview branch, re-run it
-# from the Actions tab ("Run workflow") or push anything to main.
+# Builds the Next.js site on main and publishes it to GitHub Pages at
+# https://darkknight5527.github.io/Akhil_Sebastian_Portfolio/
+# Runs on every push to main (or manually from the Actions tab).
 
 on:
   push:
@@ -29,53 +25,17 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Check out the live HTML site (main)
-        uses: actions/checkout@v4
-        with:
-          path: site-src
-
-      - name: Check out the base model
-        uses: actions/checkout@v4
-        with:
-          ref: nextjs-redesign
-          path: next-src
-
-      - name: Check out the effects model
-        uses: actions/checkout@v4
-        with:
-          ref: effects
-          path: effects-src
-
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: |
-            next-src/package-lock.json
-            effects-src/package-lock.json
-
-      - name: Build the base model into /next/
-        working-directory: next-src
+      - name: Build
         env:
-          NEXT_BASE_PATH: /Akhil_Sebastian_Portfolio/next
+          NEXT_BASE_PATH: /Akhil_Sebastian_Portfolio
         run: npm ci && npm run build
-
-      - name: Build the effects model into /effects/
-        working-directory: effects-src
-        env:
-          NEXT_BASE_PATH: /Akhil_Sebastian_Portfolio/effects
-        run: npm ci && npm run build
-
-      - name: Assemble the site
-        run: |
-          mkdir _site
-          rsync -a --exclude .git --exclude .github site-src/ _site/
-          mkdir _site/next _site/effects
-          cp -r next-src/out/. _site/next/
-          cp -r effects-src/out/. _site/effects/
-
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./_site
+          path: ./out
       - id: deployment
         uses: actions/deploy-pages@v4

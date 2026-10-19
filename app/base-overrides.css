@@ -1,0 +1,151 @@
+/*
+ * Changes made on top of the original styles (legacy.css stays untouched).
+ * Each block notes what it changes and when it was agreed.
+ */
+
+/* Top bar: name on the left, links on the right, in one row (19 Oct 2026) */
+nav { flex-direction: row; justify-content: space-between; align-items: center; padding: 16px 40px; }
+nav.filled { padding: 10px 40px; }
+@media (max-width: 800px) { nav, nav.filled { padding: 12px 20px; } }
+@media (max-width: 768px) { nav { justify-content: flex-start; } }
+
+/* Top bar: same size as the effects model's bar (19 Oct 2026).
+   Space Mono capitals look larger per pixel than the effects font, so sizes are
+   matched by how big the letters look (bar ~64px tall, name ~24px tall). */
+nav { padding: 20px 40px 19px; }
+nav.filled { padding: 12px 40px; }
+.nav-logo { font-size: 22px; letter-spacing: 0.14em; }
+.nav-links { gap: 30px; }
+.nav-links a { font-size: 15px; letter-spacing: 0.1em; }
+@media (max-width: 1050px) {
+  .nav-logo { font-size: 18px; }
+  .nav-links { gap: 20px; }
+  .nav-links a { font-size: 13px; }
+}
+@media (max-width: 800px) { nav, nav.filled { padding: 14px 20px; } }
+@media (max-width: 768px) {
+  .nav-logo { font-size: 16px; }
+  .nav-links a { font-size: 18px; } /* full-screen phone menu */
+}
+
+/* Home background: lighter shading so the circuit board shows like in the effects
+   model (19 Oct 2026). A soft dark patch stays behind the centred name for readability,
+   and the bottom still fades into the next section. */
+.hero-overlay {
+  background:
+    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(3, 8, 5, 0.55) 0%, rgba(3, 8, 5, 0.15) 60%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(3, 8, 5, 0.95) 100%);
+}
+
+/* Home buttons styled like the effects model, keeping the base icons (19 Oct 2026):
+   rounded pills, larger sentence-case text; "View projects" has a green light running
+   round its border, "Resume" is solid green, GitHub and Contact are outlined. */
+@property --hb-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes hb-spin { to { --hb-a: 360deg; } }
+.hero-btns { gap: 12px; }
+.hero-btns .btn {
+  font-family: "Inter", sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 0; text-transform: none;
+  height: 48px; padding: 0 24px; border-radius: 999px; gap: 9px;
+}
+.hero-btns .btn svg { width: 15px; height: 15px; }
+.hero-btns .btn:nth-child(1) {
+  position: relative; isolation: isolate;
+  background: rgba(3, 8, 5, 0.9); color: var(--g); border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.hero-btns .btn:nth-child(1)::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from var(--hb-a), transparent 0deg, transparent 240deg, rgba(0, 229, 122, 0.95) 320deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: hb-spin 3.5s linear infinite;
+}
+.hero-btns .btn:nth-child(1):hover { background: rgba(0, 229, 122, 0.08); color: var(--g); }
+.hero-btns .btn:nth-child(2) { background: var(--g); color: #030805; border-color: var(--g); }
+.hero-btns .btn:nth-child(2):hover { background: #fff; border-color: #fff; color: #030805; }
+.hero-btns .btn:nth-child(n + 3) {
+  /* solid tint instead of a live blur: the blur had to be redrawn over the animated
+     background every frame (performance, 19 Oct 2026) */
+  background: rgba(3, 8, 5, 0.72); color: rgba(255, 255, 255, 0.85); border-color: rgba(255, 255, 255, 0.15);
+}
+.hero-btns .btn:nth-child(n + 3):hover { border-color: var(--g); color: #fff; }
+@media (max-width: 768px) {
+  .hero-btns .btn { font-size: 14px; height: 44px; padding: 0 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-btns .btn:nth-child(1)::before { animation: none; }
+}
+
+/* Scroll trace replaces the page scrollbar on laptops/desktops (19 Oct 2026):
+   a PCB-style trace that powers up as you scroll. See public/legacy/scroll-beam.js.
+   Phones keep their normal scroll indicator. */
+#scroll-beam { display: none; }
+@media (min-width: 769px) {
+  html { scrollbar-width: none; }
+  html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+  #scroll-beam {
+    display: block; position: fixed; z-index: 990; right: 4px; top: 88px; bottom: 18px; width: 24px;
+    cursor: pointer; touch-action: none;
+  }
+  #scroll-beam svg { position: absolute; left: 0; top: 0; overflow: visible; }
+  #scroll-beam .pad, #scroll-beam .pad-hole { transition: fill 0.4s, stroke 0.4s; }
+  #scroll-beam.is-on > svg > g:nth-of-type(2) .pad { stroke: #00e57a; filter: url(#trace-glow); }
+  #scroll-beam.is-on > svg > g:nth-of-type(2) .pad-hole { fill: #00e57a; }
+  #scroll-beam.is-end > svg > g:nth-of-type(3) .pad { stroke: #00e57a; filter: url(#trace-glow); }
+  #scroll-beam.is-end > svg > g:nth-of-type(3) .pad-hole { fill: #00e57a; }
+}
+
+/* Languages as a row of cards, styled after the effects model (19 Oct 2026).
+   Bars fill when the row scrolls into view (public/legacy/lang-cards.js). */
+.lang-wrap { margin-top: 48px; }
+.lang-title { font-family: 'Space Mono', monospace; font-size: 9px; color: rgba(0, 229, 122, 0.6); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 14px; }
+.lang-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.lang-card {
+  position: relative; overflow: hidden; padding: 18px 18px 16px; border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07); background: rgba(255, 255, 255, 0.02); transition: border-color 0.3s;
+}
+.lang-card:hover { border-color: rgba(0, 229, 122, 0.4); }
+.lang-glyph { position: absolute; top: 2px; right: 8px; font-size: 52px; font-weight: 700; line-height: 1; color: rgba(0, 229, 122, 0.09); pointer-events: none; }
+.lang-name { position: relative; font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 600; color: #fff; }
+.lang-meta { position: relative; display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px; }
+.lang-lvl { font-size: 12px; color: var(--g); }
+.lang-pct { font-family: 'Space Mono', monospace; font-size: 11px; color: rgba(255, 255, 255, 0.4); }
+.lang-bar { position: relative; margin-top: 12px; height: 5px; border-radius: 99px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
+.lang-fill { height: 100%; width: 0; border-radius: 99px; background: var(--g); box-shadow: 0 0 10px rgba(0, 229, 122, 0.6); transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1); }
+.lang-wrap.in .lang-fill { width: var(--w); }
+.lang-card:nth-child(2) .lang-fill { transition-delay: 0.08s; }
+.lang-card:nth-child(3) .lang-fill { transition-delay: 0.16s; }
+.lang-card:nth-child(4) .lang-fill { transition-delay: 0.24s; }
+@media (max-width: 900px) { .lang-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .lang-fill { width: var(--w); transition: none; } }
+
+/* ── Send button: running-light border (effects model's moving border) ── */
+#cf-btn.run-border{
+  position:relative;overflow:hidden;display:block;
+  height:48px;padding:1px !important;
+  background:rgba(255,255,255,.04) !important;
+  border-radius:14px !important;
+  color:var(--g) !important;font-size:15px !important;font-weight:600;letter-spacing:.01em;
+}
+#cf-btn .cf-orbit{position:absolute;inset:0;pointer-events:none}
+#cf-btn .cf-orbit svg{position:absolute;inset:0;overflow:visible}
+#cf-btn .cf-blob{
+  position:absolute;left:0;top:0;width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle,#00e57a 40%,transparent 60%);opacity:.8;
+}
+#cf-btn .cf-inner{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:100%;height:100%;border-radius:13px;
+  background:rgba(4,12,8,.94);border:1px solid rgba(255,255,255,.07);
+  transition:background .2s,border-color .2s,color .2s;
+}
+#cf-btn.run-border:hover .cf-inner{background:rgba(6,22,14,.92);border-color:rgba(0,229,122,.3);color:#3dffa0}
+#cf-btn.run-border.sent .cf-inner{background:rgba(0,229,122,.14);border-color:rgba(0,229,122,.45)}
+
+/* ── Performance (19 Oct 2026) ──
+   The filled nav is 98% opaque, so its blur was invisible but still recalculated on
+   every scroll frame. */
+nav.filled{-webkit-backdrop-filter:none;backdrop-filter:none}
+
+/* ── Easter-egg sweeper: taller stage so the 3D robot and its brush fit ── */
+#robot-stage{height:240px !important}
+#robot-walk-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1} /* dust in front of the robot */
