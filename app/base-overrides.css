@@ -149,3 +149,152 @@ nav.filled{-webkit-backdrop-filter:none;backdrop-filter:none}
 /* ── Easter-egg sweeper: taller stage so the 3D robot and its brush fit ── */
 #robot-stage{height:240px !important}
 #robot-walk-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1} /* dust in front of the robot */
+
+/* ── Skills layout (19 Oct 2026): cards two-up, chip panel as tall as the cards,
+   so the right side no longer leaves a big empty strip ── */
+@media (min-width: 1000px) {
+  #skills-layout { grid-template-columns: 1fr 340px !important; align-items: stretch !important; gap: 24px !important; }
+  #skills-cards { display: grid !important; grid-template-columns: 1fr 1fr; gap: 16px !important; align-content: start; }
+  #skills-side { position: relative !important; top: auto !important; display: flex; }
+  #chip-box { height: auto !important; flex: 1; margin-bottom: 0 !important; min-height: 420px; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   Projects (19 Oct 2026): the old layout (tabs, featured card, grid) with
+   effects-model cards. Press a card and it expands in place to show the
+   full write-up, skills, links, photos and the 3D model.
+   ════════════════════════════════════════════════════════════ */
+@keyframes spin { to { transform: rotate(360deg); } } /* the original loaders used this but the rule was lost */
+.pj-feature-wrap { margin-bottom: 18px; }
+#proj-grid.pj-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; grid-auto-flow: row dense; } /* two-up, like the original grid */
+@media (max-width: 640px) { #proj-grid.pj-grid { grid-template-columns: 1fr; } }
+
+.pj-card {
+  position: relative; display: flex; flex-direction: column; gap: 0;
+  background: #0a0f0c; border: 1px solid rgba(255,255,255,0.08); border-radius: 22px;
+  padding: 14px; cursor: pointer; outline: none;
+  transition: border-color .3s, box-shadow .3s, opacity .7s, transform .7s; /* keeps the scroll reveal */
+}
+.pj-card:hover, .pj-card:focus-visible { border-color: color-mix(in srgb, var(--c) 55%, transparent); }
+.pj-card:focus-visible { box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 60%, transparent); }
+.pj-card.hidden { display: none !important; }
+.pj-spot {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s;
+  background: radial-gradient(420px circle at var(--sx, 50%) var(--sy, 0%), color-mix(in srgb, var(--c) 14%, transparent), transparent 60%);
+}
+.pj-card:hover .pj-spot { opacity: 1; }
+
+/* media */
+.pj-media { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 16 / 10; background: #070b09; flex-shrink: 0; }
+.pj-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+img.pj-cover { display: block; }
+.pj-card:not(.open):hover img.pj-cover { transform: scale(1.04); }
+.pj-artbox { display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.05); border-radius: 14px;
+  background-color: rgba(0,0,0,.3);
+  background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 22px 22px; }
+.pj-art { width: 82%; max-height: 78%; }
+.pj-model { position: absolute; inset: 0; display: none; background: #111; }
+.pj-loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; pointer-events: none; }
+.pj-loading span { font-family: 'Space Mono', monospace; font-size: 10px; color: rgba(0,229,122,.5); letter-spacing: .12em; text-transform: uppercase; }
+.pj-spinner { width: 34px; height: 34px; border: 2px solid rgba(0,229,122,.2); border-top-color: var(--g); border-radius: 50%; animation: spin .8s linear infinite; }
+.pj-hint { position: absolute; bottom: 12px; left: 14px; font-family: 'Space Mono', monospace; font-size: 9px; color: rgba(0,229,122,.55); letter-spacing: .1em; text-transform: uppercase; pointer-events: none; }
+.pj-model canvas { cursor: grab; }
+.pj-model canvas:active { cursor: grabbing; }
+
+/* featured slideshow */
+.pj-slides img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; transition: opacity .6s; }
+.pj-slides .rs-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 2; }
+.pj-slides .rsdot { width: 7px; height: 7px; border-radius: 50%; cursor: pointer; transition: background .2s; }
+#rs-caption { position: absolute; top: 12px; left: 12px; z-index: 2; font-family: 'Space Mono', monospace; font-size: 9px; color: rgba(255,255,255,.75);
+  letter-spacing: .1em; text-transform: uppercase; background: rgba(0,0,0,.45); padding: 4px 8px; border-radius: 6px; }
+
+/* text */
+.pj-body { position: relative; display: flex; flex-direction: column; padding: 16px 6px 4px; min-width: 0; flex: 1; }
+.pj-kicker { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; color: var(--c); margin: 0; }
+.pj-title { font-family: 'Inter', sans-serif; font-size: 21px; font-weight: 600; color: #fff; line-height: 1.25; letter-spacing: -.01em; margin: 4px 0 0; }
+.pj-sub { font-family: 'Inter', sans-serif; font-size: 13.5px; color: rgba(255,255,255,.45); margin: 3px 0 0; }
+.pj-desc { font-family: 'Inter', sans-serif; font-size: 14.5px; line-height: 1.65; color: rgba(255,255,255,.6); margin: 10px 0 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pj-foot { margin-top: auto; padding-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pj-has { font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(255,255,255,.4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pj-explore { flex-shrink: 0; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.06); padding: 8px 16px; border-radius: 999px; transition: background .2s, color .2s; }
+.pj-card:hover .pj-explore { background: var(--c); color: #030805; }
+.pj-ex-close { display: none; }
+
+/* the part that opens */
+.pj-more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s ease; }
+.pj-more-in { overflow: hidden; min-height: 0; }
+.pj-tags { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 16px; }
+.pj-links { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 16px; }
+.pj-link { display: inline-flex; align-items: center; gap: 8px; font-family: 'Space Mono', monospace; font-size: 11px; color: var(--g); letter-spacing: .1em;
+  text-transform: uppercase; text-decoration: none; border: 1px solid rgba(0,229,122,.3); border-radius: 999px; padding: 10px 18px; transition: background .2s; }
+.pj-link:hover { background: rgba(0,229,122,.08); }
+.pj-extra { display: none; }
+.pj-extra-t { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--g); letter-spacing: .14em; text-transform: uppercase; margin: 22px 6px 10px; }
+.pj-thumbs { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+.pj-thumb { padding: 0; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; overflow: hidden; aspect-ratio: 1; cursor: zoom-in; background: #070b09; transition: border-color .2s, transform .2s; }
+.pj-thumb:hover { border-color: var(--c); transform: translateY(-2px); }
+.pj-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pj-model-box { position: relative; height: 480px; border-radius: 14px; overflow: hidden; }
+.pj-model-box .pj-model { display: block; }
+
+/* featured card: picture left, text right */
+.pj-featured { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); column-gap: 10px; }
+.pj-featured .pj-media { aspect-ratio: auto; min-height: 340px; }
+.pj-featured .pj-body { padding: 18px 18px 8px 22px; }
+.pj-featured .pj-title { font-size: 28px; }
+.pj-featured .pj-desc { -webkit-line-clamp: 4; }
+.pj-featured .pj-extra { grid-column: 1 / -1; }
+
+/* a card left alone on the last row gets the full width, laid out like the featured one */
+.pj-grid .pj-card.pj-wide:not(.open) { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); column-gap: 10px; }
+.pj-grid .pj-card.pj-wide:not(.open) .pj-media { aspect-ratio: auto; min-height: 200px; }
+.pj-grid .pj-card.pj-wide:not(.open) .pj-body { padding: 14px 16px 6px 20px; }
+
+/* ── open ── */
+.pj-card.open { cursor: default; border-color: color-mix(in srgb, var(--c) 45%, transparent); box-shadow: 0 30px 80px -40px color-mix(in srgb, var(--c) 45%, transparent); }
+.pj-card.open .pj-more { grid-template-rows: 1fr; }
+.pj-card.open .pj-desc { display: block; -webkit-line-clamp: unset; overflow: visible; }
+.pj-card.open .pj-ex-open { display: none; }
+.pj-card.open .pj-ex-close { display: inline; }
+.pj-card.open .pj-explore { cursor: pointer; }
+.pj-card.open .pj-extra { display: block; }
+.pj-card.open .pj-has { visibility: hidden; }
+.pj-grid .pj-card.open { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); column-gap: 10px; }
+.pj-grid .pj-card.open .pj-media { aspect-ratio: auto; min-height: 380px; }
+.pj-grid .pj-card.open .pj-body { padding: 18px 18px 8px 22px; }
+.pj-grid .pj-card.open .pj-title { font-size: 26px; }
+/* cards with a 3D model swap the picture for the live model when open */
+.pj-card.open .pj-media .pj-model { display: block; }
+.pj-card.open .pj-media .pj-model ~ * { display: none; }
+.pj-card.open .pj-media:has(.pj-model) .pj-cover { visibility: hidden; }
+
+@media (max-width: 760px) {
+  .pj-featured, .pj-grid .pj-card.open, .pj-grid .pj-card.pj-wide:not(.open) { display: flex; flex-direction: column; }
+  .pj-featured .pj-media, .pj-grid .pj-card.open .pj-media { min-height: 0; aspect-ratio: 4 / 3; }
+  .pj-grid .pj-card.pj-wide:not(.open) .pj-media { aspect-ratio: 16 / 10; }
+  .pj-featured .pj-body, .pj-grid .pj-card.open .pj-body { padding: 16px 6px 4px; }
+  .pj-featured .pj-title { font-size: 23px; }
+  .pj-thumbs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .pj-model-box { height: 300px; }
+}
+
+/* looping card art (from the effects model) */
+.art-wave { stroke-dasharray: 400; animation: pj-wave 3s linear infinite; }
+@keyframes pj-wave { from { stroke-dashoffset: 400; } to { stroke-dashoffset: 0; } }
+.art-strobe { animation: pj-strobe 3s ease-in-out infinite; }
+@keyframes pj-strobe { 0%, 100% { transform: translateX(-60px); } 50% { transform: translateX(60px); } }
+.art-layer { animation: pj-layer 3.6s ease-out infinite; }
+@keyframes pj-layer { 0% { opacity: 0; transform: translateY(-6px); } 15%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+.art-nozzle { animation: pj-nozzle 1.4s ease-in-out infinite alternate; }
+@keyframes pj-nozzle { from { transform: translateX(-30px); } to { transform: translateX(30px); } }
+.art-led { animation: pj-led 2.4s ease-in-out infinite; }
+@keyframes pj-led { 0%, 100% { fill-opacity: .12; } 50% { fill-opacity: 1; } }
+.art-draw { stroke-dasharray: 260; animation: pj-draw 3.2s ease-in-out infinite; }
+@keyframes pj-draw { 0% { stroke-dashoffset: 260; } 60%, 100% { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .art-wave, .art-strobe, .art-layer, .art-nozzle, .art-led, .art-draw { animation: none; }
+  .pj-more { transition: none; }
+}

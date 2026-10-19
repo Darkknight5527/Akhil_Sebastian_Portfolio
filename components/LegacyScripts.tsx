@@ -11,6 +11,7 @@ const SCRIPTS = [
   `${BASE}/legacy/scroll-beam.js`, // tracing-beam scroll indicator
   `${BASE}/legacy/lang-cards.js`, // languages row
   `${BASE}/legacy/send-border.js`, // running light round the Send button
+  `${BASE}/legacy/project-cards.js`, // expandable project cards
   "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
   "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js",
   "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js",

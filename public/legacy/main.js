@@ -22,6 +22,8 @@ function makeScene(canvasId){
   camera.position.set(0,0,5);
   scene.add(new THREE.AmbientLight(0x00e57a,0.4));
   const dl=new THREE.DirectionalLight(0x00e57a,1);dl.position.set(3,3,3);scene.add(dl);
+  /* keep the drawing sharp and unstretched when the canvas changes size (19 Oct 2026) */
+  new ResizeObserver(function(){var w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}).observe(canvas);
   return{renderer,scene,camera,canvas};
 }
 
@@ -263,6 +265,8 @@ const wMat=()=>new THREE.LineBasicMaterial({color:0x00e57a,transparent:true,opac
   (function loop(){requestAnimationFrame(loop);
     if(!onScreen(renderer.domElement))return;
     t+=0.01;
+    // step back far enough that the whole chip fits a narrow panel
+    camera.position.z=Math.max(4.3,1.5/(Math.tan(25*Math.PI/180)*camera.aspect));
     chip.rotation.z=t*0.35;                       // turn about its own face
     tilt.rotation.x=-0.95+Math.sin(t*0.6)*0.08;   // gentle bob
     if(t>next){legs[(Math.random()*legs.length)|0].glow=1;next=t+0.12+Math.random()*0.25;}
