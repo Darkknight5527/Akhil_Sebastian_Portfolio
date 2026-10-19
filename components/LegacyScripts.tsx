@@ -14,6 +14,7 @@ const SCRIPTS = [
   "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
   "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js",
   "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js",
+  `${BASE}/legacy/sweeper-3d.js`, // 3D sweeper robot for the easter egg
   `${BASE}/legacy/main.js`,
 ];
 

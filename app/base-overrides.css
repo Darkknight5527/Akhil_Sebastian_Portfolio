@@ -145,3 +145,7 @@ nav.filled { padding: 12px 40px; }
    The filled nav is 98% opaque, so its blur was invisible but still recalculated on
    every scroll frame. */
 nav.filled{-webkit-backdrop-filter:none;backdrop-filter:none}
+
+/* ── Easter-egg sweeper: taller stage so the 3D robot and its brush fit ── */
+#robot-stage{height:240px !important}
+#robot-walk-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1} /* dust in front of the robot */

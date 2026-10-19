@@ -425,105 +425,30 @@ window.addEventListener('load', function(){
   }
   resetTimer();
 
-  /* ── DRAW ROBOT ── */
-  function drawRobot(x, y, sc, dir, legP, armP, eyeOn, smile, smileW){
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(sc * dir, sc);
-    ctx.strokeStyle = '#00e57a';
-    ctx.lineWidth = 1.8;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    /* body */
-    ctx.strokeRect(-11,-30,22,20);
-
-    /* head */
-    ctx.strokeRect(-8,-47,16,15);
-
-    /* eyes */
-    if(smile){
-      /* mischievous — squinted eyes (curved down) */
-      ctx.beginPath();
-      ctx.arc(-3,-39,3,Math.PI+0.4,Math.PI*2-0.4);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(3,-39,3,Math.PI+0.4,Math.PI*2-0.4);
-      ctx.stroke();
-    } else {
-      ctx.fillStyle = eyeOn ? '#00ff8c' : 'rgba(0,229,122,0.25)';
-      ctx.beginPath(); ctx.arc(-3,-39,2.5,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(3,-39,2.5,0,Math.PI*2); ctx.fill();
-    }
-
-    /* smile mouth */
-    if(smile){
-      var sw = smileW || 0.5;
-      ctx.beginPath();
-      ctx.arc(0,-33, 5*sw, 0.1, Math.PI-0.1);
-      ctx.stroke();
-      /* evil eyebrows */
-      ctx.beginPath();
-      ctx.moveTo(-6,-43); ctx.lineTo(-2,-41);
-      ctx.moveTo(6,-43);  ctx.lineTo(2,-41);
-      ctx.stroke();
-    }
-
-    /* antenna */
-    ctx.beginPath();
-    ctx.moveTo(0,-47); ctx.lineTo(0,-54);
-    ctx.moveTo(0,-54); ctx.lineTo(-3,-57);
-    ctx.moveTo(0,-54); ctx.lineTo(3,-57);
-    ctx.stroke();
-
-    /* arms */
-    var a = Math.sin(armP)*14;
-    ctx.beginPath();
-    ctx.moveTo(-11,-25); ctx.lineTo(-20,-25+a); ctx.lineTo(-24,-18+a);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(11,-25); ctx.lineTo(20,-25-a); ctx.lineTo(24,-18-a);
-    ctx.stroke();
-
-    /* legs */
-    var l1=Math.sin(legP)*10, l2=Math.sin(legP+Math.PI)*10;
-    ctx.beginPath();
-    ctx.moveTo(-6,-10); ctx.lineTo(-6+l1,5); ctx.lineTo(-6+l1,14);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(6,-10); ctx.lineTo(6+l2,5); ctx.lineTo(6+l2,14);
-    ctx.stroke();
-    /* feet */
-    ctx.beginPath();
-    ctx.moveTo(-6+l1,14); ctx.lineTo(-12+l1,14);
-    ctx.moveTo(6+l2,14);  ctx.lineTo(12+l2,14);
-    ctx.stroke();
-
-    ctx.restore();
+  /* ── SWEEPER ROBOT (3D, see sweeper-3d.js) + dust (2D, on the old canvas) ── */
+  var bot = null;
+  var dust = [];
+  function spawnDust(x, y){
+    for(var i=0;i<3;i++) dust.push({x:x+Math.random()*10, y:y-Math.random()*4, vx:1+Math.random()*3, vy:-1.5-Math.random()*2.5, a:0.9});
   }
-
-  /* ── DRAW CABLE ── */
-  function drawCable(x, y, plugged, alpha){
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = '#00e57a';
-    ctx.lineWidth = 1.5;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(x,y);
-    ctx.bezierCurveTo(x+20,y-12,x+32,y+8,x+48,y);
-    ctx.stroke();
-    ctx.strokeRect(x+48,y-5,12,10);
-    ctx.beginPath();
-    ctx.moveTo(x+60,y-3); ctx.lineTo(x+65,y-3);
-    ctx.moveTo(x+60,y+3); ctx.lineTo(x+65,y+3);
-    ctx.stroke();
-    if(plugged){
-      ctx.strokeRect(x+65,y-7,10,14);
-      ctx.fillStyle='#00e57a';
-      ctx.beginPath(); ctx.arc(x+70,y,2,0,Math.PI*2); ctx.fill();
+  function drawDust(){
+    ctx.fillStyle = '#00e57a';
+    for(var i=dust.length-1;i>=0;i--){
+      var d=dust[i]; d.x+=d.vx; d.y+=d.vy; d.vy+=0.18; d.vx*=0.97; d.a-=0.022;
+      if(d.a<=0){ dust.splice(i,1); continue; }
+      ctx.globalAlpha=d.a; ctx.fillRect(d.x,d.y,2.5,2.5);
     }
-    ctx.restore();
+    ctx.globalAlpha=1;
+  }
+  /* sweep the home screen away up to screen x (everything left of the brush is gone) */
+  function sweepTo(px){
+    var c = document.querySelector('#home .hero-content'), pcb = document.getElementById('hero-canvas');
+    [c, pcb].forEach(function(el){
+      if(!el) return;
+      var r = el.getBoundingClientRect();
+      var cut = Math.max(0, Math.min(r.width, px - r.left));
+      el.style.clipPath = 'inset(0 0 0 ' + cut + 'px)';
+    });
   }
 
   /* ── KILL HERO ── */
@@ -548,6 +473,10 @@ window.addEventListener('load', function(){
     var sub     = document.getElementById('hs');
     var btns    = document.getElementById('hb');
     var pcb     = document.getElementById('hero-canvas');
+
+    /* clear the sweeper's wipe */
+    hero.style.clipPath = '';
+    if(pcb) pcb.style.clipPath = '';
 
     /* First — make sure hero wrapper is visible with no filter */
     hero.style.transition = 'none';
@@ -604,100 +533,96 @@ window.addEventListener('load', function(){
     }, 1400);
   }
 
-  /* ── MAIN SEQUENCE ── */
+  /* ── MAIN SEQUENCE (sweeper, 19 Oct 2026) ──
+     rolls in → looks around → spots the mess → sweeps the home screen away →
+     happy bounce → zooms off; then the hero comes back part by part as before. */
   function runEasterEgg(){
     checkHero();
     if(animating || !onHero) return;
+    if(!bot) bot = window.makeSweeper3D ? window.makeSweeper3D(stage) : null;
+    if(!bot) return;
     animating = true;
     abort = false;
-    resizeCanvas();
     stage.style.display = 'block';
+    resizeCanvas(); bot.resize();
+    dust = [];
 
     var W = canvas.width;
-    var groundY = canvas.height - 18;
-    var robotX = -70;
-    var stopX  = W * 0.48;
-    var frame  = 0;
-    var phase  = 'walk-in';
-    var phaseF = 0;
-    var smileAmt = 0;
-    var plugAlpha = 0;
-    var plugged = true;
-    var speed  = 1.2; /* slow walk */
+    var SC = W < 769 ? 1.4 : 2.1;
+    var groundY = canvas.height - 14;
+    var x = -90, speed = 1.6, wheel = 0;
+    var phase = 'roll-in', f = 0;
+    var stopX = Math.max(70, W * 0.08);
+    var brushReach = 36 * SC;            /* brush tip, ahead of the robot's centre */
+
+    function finish(){
+      stage.style.display = 'none';
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      bot.clear();
+    }
 
     function tick(){
       if(abort){
-        /* visitor scrolled away: hide the robot and switch the hero back on */
         abort = false;
-        stage.style.display = 'none';
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        finish();
         if(killed){ killed = false; reviveHero(); }
         animating = false;
         resetTimer();
         return;
       }
-      resizeCanvas();
       ctx.clearRect(0,0,canvas.width,canvas.height);
-      var leg = frame * 0.12; /* slow leg swing */
-      var arm = frame * 0.12;
+      var pose;
 
-      if(phase==='walk-in'){
-        robotX += speed;
-        drawRobot(robotX, groundY, 1.1, 1, leg, arm, true, false, 0);
-        if(robotX >= stopX){ phase='look'; phaseF=0; }
+      if(phase==='roll-in'){
+        x += speed; wheel += speed/(9*SC);
+        pose = {wheel:wheel, eyes:'open', look:1, broom:-0.9, bob:Math.abs(Math.sin(f*0.2))*0.8};
+        if(x >= stopX){ phase='look'; f=0; }
 
       } else if(phase==='look'){
-        /* robot stops, slowly turns to face us, smile grows */
-        smileAmt = Math.min(1, phaseF / 40);
-        var eyeFlicker = Math.sin(phaseF*0.3) > 0;
-        drawRobot(robotX, groundY, 1.1, 1, 0, Math.sin(phaseF*0.05)*0.3, eyeFlicker, smileAmt > 0.3, smileAmt);
-        phaseF++;
-        if(phaseF > 80){ phase='grab'; phaseF=0; }
+        /* glances back and forth, antenna flickering */
+        var lk = f<35 ? -1 : f<70 ? 1 : f<95 ? -1 : 0;
+        pose = {wheel:wheel, eyes:'open', look:lk, broom:-0.9, led:(f%14<7)?1:0.2, turn:lk*0.12};
+        if(f > 110){ phase='spot'; f=0; }
 
-      } else if(phase==='grab'){
-        /* reaches for plug */
-        drawRobot(robotX, groundY, 1.1, 1, 0, phaseF*0.06, true, true, 1);
-        plugAlpha = Math.min(1, phaseF/12);
-        plugged = phaseF < 30;
-        drawCable(robotX-35, groundY-42, plugged, plugAlpha);
-        if(phaseF===30){
-          killHero();
-          killed = true;
-          /* screen dies — robot looks at us and grins wider */
-        }
-        phaseF++;
-        if(phaseF > 50){ phase='gloat'; phaseF=0; }
+      } else if(phase==='spot'){
+        /* squints at the mess and lowers the brush */
+        var k = Math.min(1, f/30);
+        pose = {wheel:wheel, eyes:'blink', look:0.6, broom:-0.9 + 0.58*k};
+        if(f > 45){ phase='sweep'; f=0; killed = true; }
 
-      } else if(phase==='gloat'){
-        /* robot faces us, big smile, bounces */
-        var bounce = Math.abs(Math.sin(phaseF*0.25))*5;
-        drawRobot(robotX, groundY-bounce, 1.2, 1, 0, Math.sin(phaseF*0.2)*0.5, true, true, 1);
-        drawCable(robotX-35, groundY-42, false, Math.max(0,1-phaseF/20));
-        phaseF++;
-        if(phaseF > 55){ phase='sprint'; phaseF=0; speed=8; }
+      } else if(phase==='sweep'){
+        /* rolls across; everything behind the brush is swept away */
+        x += 3.4; wheel += 3.4/(9*SC);
+        var stroke = Math.sin(f*0.38);
+        pose = {wheel:wheel, eyes:'open', look:1, broom:-0.32 - 0.16*Math.max(0,stroke), bob:Math.abs(stroke)*1.2};
+        var tip = x + brushReach;
+        sweepTo(tip);
+        if(stroke < -0.2) spawnDust(tip, groundY - 2);
+        if(tip > W + 10){ killHero(); phase='done'; f=0; }
 
-      } else if(phase==='sprint'){
-        /* SPRINT off screen — legs going wild */
-        robotX += speed;
-        speed = Math.min(22, speed + 0.6);
-        drawRobot(robotX, groundY, 1.1, 1, leg*3, arm*3, true, true, 0.8);
-        if(robotX > W+100){
-          /* robot gone — wait 2 seconds then revive */
-          stage.style.display='none';
-          ctx.clearRect(0,0,canvas.width,canvas.height);
+      } else if(phase==='done'){
+        /* job done: brush on the shoulder, ^ ^ face, happy bounce */
+        pose = {wheel:wheel, eyes:'happy', broom:-2.7, bob:Math.abs(Math.sin(f*0.25))*7, turn:-0.25};
+        if(x > W - 80*SC) x -= 1.2;     /* back into view if it ended at the edge */
+        if(f > 60){ phase='zoom'; f=0; speed=4; }
+
+      } else if(phase==='zoom'){
+        x += speed; speed = Math.min(24, speed + 0.7); wheel += speed/(9*SC);
+        pose = {wheel:wheel, eyes:'happy', broom:-2.7, bob:Math.abs(Math.sin(f*0.5))*2};
+        if(x > W + 120){
+          finish();
           setTimeout(function(){
             killed = false;
             reviveHero();
-            setTimeout(function(){
-              animating = false;
-              resetTimer();
-            }, 2500);
-          }, 2000);
+            setTimeout(function(){ animating = false; resetTimer(); }, 2500);
+          }, 1500);
           return;
         }
       }
 
-      frame++;
+      bot.render(x, groundY, SC, pose);
+      drawDust();
+      f++;
       requestAnimationFrame(tick);
     }
     tick();
